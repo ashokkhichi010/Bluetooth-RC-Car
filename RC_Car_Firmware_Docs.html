@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RC Car Firmware Docs</title>
+  <style>
+    :root {
+      --sb: 280px;
+      --top: 64px;
+      --bg: #f5eee4;
+      --bg2: #efe1cf;
+      --panel: #fffdf8;
+      --glass: rgba(255, 251, 245, .88);
+      --dark: #182125;
+      --dark2: #0f171a;
+      --ink: #202733;
+      --muted: #5b6673;
+      --line: rgba(90, 68, 41, .14);
+      --brand: #c95b2c;
+      --brand2: #8b3319;
+      --teal: #0f766e;
+      --blue: #275dad;
+      --warn: #b56d1c;
+      --ok: #238759;
+      --shadow: 0 18px 40px rgba(27, 18, 9, .12);
+      --r: 22px;
+      --ease: 180ms cubic-bezier(.22, 1, .36, 1)
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      margin: 0;
+      font: 16px/1.7 "Aptos", "Segoe UI", Tahoma, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, rgba(201, 91, 44, .14), transparent 26%), radial-gradient(circle at top right, rgba(15, 118, 110, .12), transparent 28%), linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x: hidden
+    }
+
+    body.drawer-open {
+      overflow: hidden
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit
+    }
+
+    button {
+      font: inherit
+    }
+
+    code {
+      font: 14px "Cascadia Code", Consolas, "Courier New", monospace;
+      background: rgba(39, 93, 173, .08);
+      color: var(--blue);
+      border: 1px solid rgba(39, 93, 173, .14);
+      padding: .12rem .45rem;
+      border-radius: 999px
+    }
+
+    #progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      width: 0;
+      background: linear-gradient(90deg, var(--brand), var(--teal));
+      z-index: 120
+    }
+
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 26, .46);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--ease);
+      z-index: 90;
+      backdrop-filter: blur(3px)
+    }
+
+    #overlay.show {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    #sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: var(--sb);
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, var(--dark), var(--dark2));
+      color: #edf4f3;
+      border-right: 1px solid rgba(255, 255, 255, .08);
+      box-shadow: var(--shadow);
+      z-index: 100;
+      transition: transform var(--ease)
+    }
+
+    .sb-head {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .08)
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: .28rem .7rem;
+      border-radius: 999px;
+      background: rgba(201, 91, 44, .18);
+      color: #ffd5c6;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase
+    }
+
+    .sb-head h1 {
+      margin: .9rem 0 .4rem;
+      font: 700 1.45rem/1.05 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif
+    }
+
+    .sb-head p,
+    .sb-foot p {
+      margin: 0;
+      color: rgba(237, 244, 243, .64)
+    }
+
+    .sb-scroll {
+      flex: 1;
+      overflow: auto;
+      padding: 1rem .7rem
+    }
+
+    .sb-label {
+      padding: .65rem .5rem .35rem;
+      color: rgba(237, 244, 243, .38);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: .78rem;
+      margin: .14rem 0;
+      padding: .78rem .84rem;
+      border-radius: 16px;
+      color: rgba(237, 244, 243, .78);
+      transition: background var(--ease), transform var(--ease), color var(--ease)
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255, 255, 255, .08);
+      color: #fff;
+      transform: translateX(3px)
+    }
+
+    .nav-index {
+      width: 2rem;
+      height: 2rem;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .08);
+      font-size: .8rem;
+      font-weight: 700;
+      flex: none
+    }
+
+    .nav-link.active .nav-index {
+      background: linear-gradient(135deg, var(--brand), #ea8457)
+    }
+
+    .sb-foot {
+      padding: 1rem 1.2rem 1.2rem;
+      border-top: 1px solid rgba(255, 255, 255, .08)
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .42rem;
+      padding: .38rem .66rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .06);
+      font-size: .78rem
+    }
+
+    .dot {
+      width: .5rem;
+      height: .5rem;
+      border-radius: 50%;
+      flex: none
+    }
+
+    #shell {
+      margin-left: var(--sb);
+      min-height: 100vh
+    }
+
+    #topbar {
+      position: sticky;
+      top: 0;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      min-height: 64px;
+      padding: 0 1.4rem;
+      background: rgba(255, 251, 245, .8);
+      border-bottom: 1px solid rgba(90, 68, 41, .1);
+      backdrop-filter: blur(14px)
+    }
+
+    #hamburger {
+      display: none;
+      width: 2.7rem;
+      height: 2.7rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      color: var(--ink);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center
+    }
+
+    .tb-copy {
+      min-width: 0
+    }
+
+    .tb-kicker {
+      display: block;
+      font-size: .76rem;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      color: #7a8591
+    }
+
+    .tb-title {
+      display: block;
+      margin-top: .14rem;
+      font: 700 1rem/1.2 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .tb-tags {
+      margin-left: auto;
+      display: flex;
+      gap: .55rem;
+      flex-wrap: wrap
+    }
+
+    .tag {
+      padding: .42rem .74rem;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase
+    }
+
+    .tag.brand {
+      background: rgba(201, 91, 44, .12);
+      color: var(--brand2)
+    }
+
+    .tag.teal {
+      background: rgba(15, 118, 110, .12);
+      color: var(--teal)
+    }
+
+    .tag.blue {
+      background: rgba(39, 93, 173, .1);
+      color: var(--blue)
+    }
+
+    #content {
+      width: min(1060px, 100%);
+      margin: 0 auto;
+      padding: 2rem 1.6rem 4rem
+    }
+
+    .hero,
+    .section {
+      background: var(--glass);
+      border: 1px solid rgba(255, 255, 255, .75);
+      box-shadow: 0 12px 28px rgba(27, 18, 9, .08);
+      border-radius: 26px
+    }
+
+    .hero {
+      padding: 2rem;
+      background: radial-gradient(circle at top right, rgba(255, 255, 255, .18), transparent 24%), linear-gradient(135deg, #1a2b35, #0d4c56 48%, #d85f33);
+      color: #fff6f1;
+      box-shadow: 0 24px 52px rgba(18, 12, 6, .18)
+    }
+
+    .hero-grid,
+    .grid,
+    .flow,
+    .steps,
+    .split {
+      display: grid;
+      gap: 1rem
+    }
+
+    .hero-grid {
+      grid-template-columns: minmax(0, 1.3fr) minmax(240px, .82fr)
+    }
+
+    .hero h1 {
+      margin: .95rem 0 .6rem;
+      font: 700 clamp(2rem, 4vw, 3.2rem)/.97 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
+      letter-spacing: -.03em
+    }
+
+    .hero p,
+    .section-head p,
+    .card p,
+    .node p,
+    .step p,
+    .sb-foot p {
+      color: inherit
+    }
+
+    .hero p {
+      color: rgba(255, 246, 241, .86)
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+      margin-top: 1.2rem
+    }
+
+    .hero-badges span {
+      padding: .42rem .72rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .14);
+      font-size: .82rem
+    }
+
+    .hero-panel {
+      padding: 1.1rem;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, .12);
+      border: 1px solid rgba(255, 255, 255, .16)
+    }
+
+    .hero-panel h2 {
+      margin: 0;
+      font-size: .9rem;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      color: rgba(255, 246, 241, .7)
+    }
+
+    .hero-panel ul {
+      margin: .9rem 0 0;
+      padding-left: 1rem
+    }
+
+    .section {
+      margin-top: 1.25rem;
+      padding: 1.3rem;
+      scroll-margin-top: 82px
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1rem
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font: 700 1.55rem/1.05 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif
+    }
+
+    .section-head p,
+    .card p,
+    .node p,
+    .step p,
+    .footer-note,
+    .check {
+      margin: .4rem 0 0;
+      color: var(--muted)
+    }
+
+    .badge {
+      padding: .46rem .72rem;
+      border-radius: 999px;
+      background: #fff0dd;
+      color: var(--warn);
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap
+    }
+
+    .grid.cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr))
+    }
+
+    .grid.cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr))
+    }
+
+    .grid.cols-2,
+    .split {
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .card,
+    .node,
+    .step {
+      padding: 1rem;
+      border-radius: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 22px rgba(27, 18, 9, .06)
+    }
+
+    .card h3,
+    .node h3,
+    .step h3 {
+      margin: 0;
+      font-size: 1rem
+    }
+
+    .value {
+      display: block;
+      margin-top: .7rem;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--brand2)
+    }
+
+    .mini-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-top: .8rem
+    }
+
+    .mini {
+      display: inline-flex;
+      padding: .34rem .62rem;
+      border-radius: 999px;
+      font-size: .74rem;
+      font-weight: 700
+    }
+
+    .mini.ok {
+      background: rgba(35, 135, 89, .12);
+      color: var(--ok)
+    }
+
+    .mini.info {
+      background: rgba(39, 93, 173, .1);
+      color: var(--blue)
+    }
+
+    .mini.warn {
+      background: rgba(181, 109, 28, .12);
+      color: var(--warn)
+    }
+
+    .mini.mute {
+      background: rgba(90, 68, 41, .08);
+      color: var(--muted)
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: .85rem;
+      padding: 1rem 1.05rem;
+      margin-top: 1rem;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fff9ef, #fff3df);
+      border: 1px solid rgba(181, 109, 28, .16)
+    }
+
+    .callout-icon {
+      width: 2.3rem;
+      height: 2.3rem;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(181, 109, 28, .12);
+      color: var(--warn);
+      font-weight: 800
+    }
+
+    .row {
+      display: grid;
+      gap: 1rem
+    }
+
+    .row.cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr))
+    }
+
+    .row.cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr))
+    }
+
+    .row.cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .node.start {
+      background: linear-gradient(135deg, #ffe1d4, #fff5ef);
+      border-color: rgba(201, 91, 44, .22)
+    }
+
+    .node.logic {
+      background: linear-gradient(135deg, #edf8f6, #fff);
+      border-color: rgba(15, 118, 110, .18)
+    }
+
+    .node.note {
+      background: linear-gradient(135deg, #edf4ff, #fff);
+      border-color: rgba(39, 93, 173, .18)
+    }
+
+    .node small {
+      display: inline-block;
+      margin-top: .7rem;
+      color: #818b96;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase
+    }
+
+    .arrow {
+      text-align: center;
+      font-weight: 800;
+      color: #7a8591;
+      font-size: .76rem;
+      letter-spacing: .12em;
+      text-transform: uppercase
+    }
+
+    .steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr))
+    }
+
+    .step {
+      position: relative
+    }
+
+    .step span {
+      position: absolute;
+      top: -.65rem;
+      left: 1rem;
+      width: 2.15rem;
+      height: 2.15rem;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), #ea8457);
+      color: #fff;
+      font-size: .9rem;
+      font-weight: 800
+    }
+
+    .check {
+      padding-left: 1.05rem
+    }
+
+    .table-shell {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel)
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 560px
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: .82rem .92rem;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top
+    }
+
+    th {
+      font-size: .8rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #7d8793
+    }
+
+    .footer-note {
+      padding: 1rem 1.05rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .58);
+      border: 1px solid rgba(90, 68, 41, .1)
+    }
+
+    #scrolltop {
+      position: fixed;
+      right: 1.2rem;
+      bottom: 1.2rem;
+      width: 3rem;
+      height: 3rem;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--teal));
+      color: #fff;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(6px);
+      transition: opacity var(--ease), transform var(--ease);
+      z-index: 70
+    }
+
+    #scrolltop.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0)
+    }
+
+    @media (max-width:1080px) {
+
+      .grid.cols-4,
+      .steps {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+
+      .grid.cols-3,
+      .row.cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+    }
+
+    @media (max-width:900px) {
+
+      .hero-grid,
+      .grid.cols-2,
+      .split,
+      .row.cols-2,
+      .row.cols-3,
+      .row.cols-4 {
+        grid-template-columns: 1fr
+      }
+
+      .tb-tags {
+        display: none
+      }
+    }
+
+    @media (max-width:780px) {
+      #sidebar {
+        transform: translateX(-100%);
+        width: min(86vw, 320px)
+      }
+
+      #sidebar.open {
+        transform: translateX(0)
+      }
+
+      #shell {
+        margin-left: 0
+      }
+
+      #hamburger {
+        display: inline-flex
+      }
+
+      #topbar {
+        padding: 0 1rem
+      }
+
+      #content {
+        padding: 1% 1%
+      }
+
+      .hero,
+      .section {
+        border-radius: 24px
+      }
+
+      .hero {
+        padding: 1.4rem
+      }
+
+      .section {
+        padding: 1rem 1rem
+      }
+
+      .section-head {
+        flex-direction: column
+      }
+
+      .grid.cols-4,
+      .grid.cols-3,
+      .steps {
+        grid-template-columns: 1fr
+      }
+
+      table {
+        min-width: 500px
+      }
+    }
+
+    @media (max-width:460px) {
+      .hero h1 {
+        font-size: 2rem
+      }
+
+      .tb-title {
+        font-size: .92rem
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="progress" aria-hidden="true"></div>
+  <div id="overlay" aria-hidden="true"></div>
+  <aside id="sidebar" aria-label="Documentation sidebar">
+    <div class="sb-head">
+      <h1>RC Car Firmware</h1>
+    </div>
+    <div class="sb-scroll">
+      <div class="sb-label">Start Here</div>
+      <a class="nav-link active" href="#overview"><span class="nav-index">01</span><span>Overview</span></a>
+      <a class="nav-link" href="#architecture"><span class="nav-index">02</span><span>Architecture</span></a>
+      <a class="nav-link" href="#flow"><span class="nav-index">03</span><span>Main Flow</span></a>
+      <div class="sb-label">Core Logic</div>
+      <a class="nav-link" href="#modes"><span class="nav-index">04</span><span>Modes</span></a>
+      <a class="nav-link" href="#obstacle"><span class="nav-index">05</span><span>Obstacle States</span></a>
+      <a class="nav-link" href="#commands"><span class="nav-index">06</span><span>Commands</span></a>
+      <div class="sb-label">Reference</div>
+      <a class="nav-link" href="#pins"><span class="nav-index">07</span><span>Pin Map</span></a>
+      <a class="nav-link" href="#power"><span class="nav-index">08</span><span>Power Notes</span></a>
+      <a class="nav-link" href="#files"><span class="nav-index">09</span><span>File Guide</span></a>
+    </div>
+  </aside>
+  <div id="shell">
+    <header id="topbar">
+      <button id="hamburger" type="button" aria-label="Open sidebar navigation" aria-expanded="false"
+        aria-controls="sidebar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.2" stroke-linecap="round">
+          <path d="M4 7h16"></path>
+          <path d="M4 12h16"></path>
+          <path d="M4 17h16"></path>
+        </svg></button>
+      <div class="tb-copy"><span class="tb-kicker">Documentation</span><span class="tb-title"
+          id="topbarTitle">Overview</span></div>
+      <div class="tb-tags"><span class="tag brand">Arduino Uno</span><span class="tag teal">Obstacle Default</span><span
+          class="tag blue">Beginner Ready</span></div>
+    </header>
+    <main id="content">
+      <section class="hero" id="overview" data-title="Overview">
+        <div class="hero-grid">
+          <div><span class="eyebrow" style="background:rgba(255,255,255,.14);color:#fff;border:none">Mode Switching RC
+              Car Firmware</span>
+            <h1>Understand the project faster and debug it with less confusion.</h1>
+            <p>This page explains the current Arduino firmware in simple language: startup, Bluetooth command reading,
+              mode switching, obstacle avoidance, pin mapping, and the reset lesson learned from the logs.</p>
+            <div class="hero-badges"><span>Default mode: OBS_MODE</span><span>Obstacle logic is
+                active</span><span>Manual and line follower work</span><span>Follow-me is a placeholder</span></div>
+          </div>
+          <div class="hero-panel">
+            <h2>Remember these first</h2>
+            <ul>
+              <li><strong>setup()</strong> runs once, then <strong>loop()</strong> repeats forever.</li>
+              <li>The firmware starts in obstacle mode.</li>
+              <li><b><i>[SYS] ready</i></b> appearing again means reset.</li>
+              <li>The reset issue came from power load, not normal logic flow.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="architecture" data-title="Architecture">
+        <div class="section-head">
+          <div>
+            <h2>Project Architecture</h2>
+            <p>The codebase is small and modular. The main sketch decides the mode, and each helper file handles one
+              focused job.</p>
+          </div><span class="badge">How it is organized</span>
+        </div>
+        <div class="grid cols-4">
+          <article class="card">
+            <h3>Main sketch</h3>
+            <p><code>mode_switching.ino</code> contains startup, Bluetooth reading, mode switching, and loop dispatch.
+            </p><span class="value">1 core controller</span>
+          </article>
+          <article class="card">
+            <h3>Motion layer</h3>
+            <p><code>motor_functions.h</code> contains forward, backward, turning, diagonal, and stop helpers.</p><span
+              class="value">9 movement paths</span>
+          </article>
+          <article class="card">
+            <h3>Sensor layer</h3>
+            <p><code>ultrasonic.h</code> and <code>servo.h</code> work together during obstacle scanning.</p><span
+              class="value">2 active sensors</span>
+          </article>
+          <article class="card">
+            <h3>Mode entries</h3>
+            <p>Obstacle, manual, line follower, and follow-me placeholder are all selected from the same loop.</p><span
+              class="value">4 mode branches</span>
+          </article>
+        </div>
+        <div class="callout">
+          <div class="callout-icon">!</div>
+          <div><strong>Best reading order for freshers:</strong> <code>mode_switching.ino</code> ->
+            <code>pin_map.h</code> -> <code>motor_functions.h</code> -> <code>manual.h</code> ->
+            <code>line_follower.h</code> -> <code>ultrasonic.h</code> -> <code>servo.h</code> ->
+            <code>obstacle_avoidance_v2.h</code>.
+          </div>
+        </div>
+      </section>
+      <section class="section" id="flow" data-title="Main Flow">
+        <div class="section-head">
+          <div>
+            <h2>Main Firmware Flow</h2>
+            <p>This section shows the real runtime path of the current sketch.</p>
+          </div><span class="badge">Current behavior</span>
+        </div>
+        <div class="flow">
+          <div class="row cols-2">
+            <article class="node start">
+              <h3>1. Power on</h3>
+              <p>The board boots and enters <code>setup()</code>.</p><small>Starting point</small>
+            </article>
+            <article class="node note">
+              <h3>2. setup()</h3>
+              <p>The code opens serial, starts Bluetooth, initializes motors, line pins, ultrasonic pins, the servo, and
+                then prints <code>[SYS] ready</code>.</p><small>Runs once</small>
+            </article>
+          </div>
+          <div class="arrow">then</div>
+          <div class="row cols-4">
+            <article class="node">
+              <h3>Serial.begin(9600)</h3>
+              <p>USB serial for logs.</p><small>Debug output</small>
+            </article>
+            <article class="node">
+              <h3>BT.begin(9600)</h3>
+              <p>Bluetooth path on <code>D0</code>/<code>D1</code>.</p><small>Bluetooth</small>
+            </article>
+            <article class="node">
+              <h3>setupMotors() and setupLine()</h3>
+              <p>Motor and line sensor pins are configured.</p><small>Hardware setup</small>
+            </article>
+            <article class="node logic">
+              <h3>setupObs()</h3>
+              <p>Ultrasonic is prepared and the servo is centered at 90 degrees.</p><small>Obstacle ready</small>
+            </article>
+          </div>
+          <div class="arrow">after setup</div>
+          <div class="row cols-3">
+            <article class="node note">
+              <h3>3. Default mode</h3>
+              <p><code>currentMode</code> starts as <code>OBS_MODE</code>.</p><small>Startup state</small>
+            </article>
+            <article class="node">
+              <h3>4. readCommand()</h3>
+              <p>The sketch checks whether one Bluetooth character arrived this loop.</p><small>Input stage</small>
+            </article>
+            <article class="node logic">
+              <h3>5. switch(currentMode)</h3>
+              <p>The code runs exactly one branch: obstacle, manual, line follower, or follow-me placeholder.</p>
+              <small>Mode dispatch</small>
+            </article>
+          </div>
+        </div>
+        </section>
+        <section class="section" id="modes" data-title="Modes">
+          <div class="section-head">
+            <div>
+              <h2>Mode Guide</h2>
+              <p>Three mode paths are working today. The fourth exists but is not implemented yet.</p>
+            </div><span class="badge">Quick mode summary</span>
+          </div>
+        <div class="grid cols-2">
+          <article class="card">
+            <h3>Obstacle mode</h3>
+            <p>The default startup mode. Uses ultrasonic distance and a servo sweep to scan left and right before
+              choosing a turn direction.</p>
+            <div class="mini-row"><span class="mini ok">Working</span><span class="mini info">Default mode</span></div>
+          </article>
+          <article class="card">
+            <h3>Manual mode</h3>
+            <p>After sending <code>M</code>, the stored manual command drives the car using helpers like
+              <code>forward()</code>, <code>backward()</code>, and turns.
+            </p>
+            <div class="mini-row"><span class="mini ok">Working</span><span class="mini info">Bluetooth driven</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Line follower mode</h3>
+            <p>Reads two digital line sensors and chooses forward, left, right, or stop using simple HIGH and LOW
+              conditions.</p>
+            <div class="mini-row"><span class="mini ok">Working</span><span class="mini info">Simple logic</span></div>
+          </article>
+          <article class="card">
+            <h3>Follow-me mode</h3>
+            <p><code>followMeRSSI()</code> exists, but the real behavior is not implemented yet.</p>
+            <div class="mini-row"><span class="mini mute">Placeholder</span><span class="mini warn">No behavior
+                yet</span></div>
+          </article>
+          </div>
+          </section>
+      <section class="section" id="obstacle" data-title="Obstacle States">
+        <div class="section-head">
+          <div>
+            <h2>Obstacle Avoidance States</h2>
+            <p>The active obstacle logic behaves like a small state machine: move, scan, turn, and return to moving.</p>
+          </div><span class="badge">State machine</span>
+        </div>
+        <div class="steps">
+          <article class="step"><span>1</span>
+            <h3>MOVE</h3>
+            <p>Update speed and check front distance. If clear, keep speed high. If close enough, go to SEARCH.</p>
+          </article>
+          <article class="step"><span>2</span>
+            <h3>SEARCH LEFT</h3>
+            <p>Servo moves toward 170 degrees and stores <code>leftDist</code>.</p>
+          </article>
+          <article class="step"><span>3</span>
+            <h3>SEARCH RIGHT</h3>
+            <p>Servo moves toward 10 degrees and stores <code>rightDist</code>.</p>
+          </article>
+          <article class="step"><span>4</span>
+            <h3>TURN</h3>
+            <p>Choose a diagonal turn, recenter the servo, and return to MOVE.</p>
+          </article>
+        </div>
+        <div class="split" style="margin-top:1rem">
+          <article class="card">
+            <h3>Emergency stop-distance check</h3>
+            <ul class="check">
+              <li>If the state is not TURN, the code measures <code>stopDist</code>.</li>
+              <li>If <code>stopDist &lt;= STOP_DIST</code>, it immediately calls <code>backward()</code>.</li>
+              <li>It sets <code>currentSpeed = 0</code> and returns.</li>
+              <li>This safety branch runs before regular scan logic.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Key constants</h3>
+            <ul class="check">
+              <li><code>BREAK_DIST = 50</code></li>
+              <li><code>STOP_DIST = 10</code></li>
+              <li><code>HIGHEST_SPEED = 180</code></li>
+              <li><code>LOW_SPEED = 20</code></li>
+              <li><code>CENTER_ANGLE = 90</code></li>
+              <li><code>LEFT_SCAN_ANGLE = 170</code></li>
+              <li><code>RIGHT_SCAN_ANGLE = 10</code></li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <section class="section" id="commands" data-title="Commands">
+        <div class="section-head">
+          <div>
+            <h2>Bluetooth Commands</h2>
+            <p>The current sketch reads a single Bluetooth character at a time. That is why the live code reacts to
+              single digit speed input instead of long packet strings.</p>
+          </div><span class="badge">Input logic</span>
+        </div>
+        <div class="row cols-3">
+          <article class="node logic">
+            <h3>Mode selection</h3>
+            <p><code>N</code> = line follower, <code>O</code> = obstacle mode, <code>M</code> = manual mode,
+              <code>W</code> = follow-me entry.
+            </p><small>High priority path</small>
+          </article>
+          <article class="node note">
+            <h3>Digit speed input</h3>
+            <p>If a character is between <code>'0'</code> and <code>'9'</code>, it is sent to
+              <code>setSpeedValue()</code>.
+            </p><small>Single digit only</small>
+          </article>
+          <article class="node">
+            <h3>Manual command storage</h3>
+            <p>Any other non-mode character is stored as the manual command for manual mode.</p><small>Manual
+              path</small>
+          </article>
+        </div>
+        <div class="grid cols-2" style="margin-top:1rem">
+          <article class="card">
+            <h3>Mode commands</h3>
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Meaning</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>N</code></td>
+                    <td>Line follower mode</td>
+                  </tr>
+                  <tr>
+                    <td><code>O</code></td>
+                    <td>Obstacle mode</td>
+                  </tr>
+                  <tr>
+                    <td><code>M</code></td>
+                    <td>Manual mode</td>
+                  </tr>
+                  <tr>
+                    <td><code>W</code></td>
+                    <td>Follow-me placeholder mode</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Manual motion commands</h3>
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>F</code></td>
+                    <td>Forward</td>
+                  </tr>
+                  <tr>
+                    <td><code>B</code></td>
+                    <td>Backward</td>
+                  </tr>
+                  <tr>
+                    <td><code>L</code></td>
+                    <td>Turn left</td>
+                  </tr>
+                  <tr>
+                    <td><code>R</code></td>
+                    <td>Turn right</td>
+                  </tr>
+                  <tr>
+                    <td><code>S</code></td>
+                    <td>Stop</td>
+                  </tr>
+                  <tr>
+                    <td><code>G</code></td>
+                    <td>Forward left</td>
+                  </tr>
+                  <tr>
+                    <td><code>I</code></td>
+                    <td>Forward right</td>
+                  </tr>
+                  <tr>
+                    <td><code>H</code></td>
+                    <td>Backward left</td>
+                  </tr>
+                  <tr>
+                    <td><code>J</code></td>
+                    <td>Backward right</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+          </div>
+      </section>
+      <section class="section" id="pins" data-title="Pin Map">
+        <div class="section-head">
+          <div>
+            <h2>Pin Reference</h2>
+            <p>These values come from <code>pin_map.h</code> and should match the real hardware wiring.</p>
+          </div><span class="badge">Hardware map</span>
+        </div>
+        <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>Part</th>
+                <th>Pin</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Bluetooth RX</td>
+                <td><code>D0</code></td>
+                <td>Shares hardware serial path</td>
+              </tr>
+              <tr>
+                <td>Bluetooth TX</td>
+                <td><code>D1</code></td>
+                <td>May interfere with upload and serial monitor</td>
+              </tr>
+              <tr>
+                <td>Left motor PWM</td>
+                <td><code>D5</code></td>
+                <td>Speed control</td>
+              </tr>
+              <tr>
+                <td>Right motor PWM</td>
+                <td><code>D6</code></td>
+                <td>Speed control</td>
+              </tr>
+              <tr>
+                <td>Left motor direction</td>
+                <td><code>D2</code>, <code>D4</code></td>
+                <td>Motor driver inputs</td>
+              </tr>
+              <tr>
+                <td>Right motor direction</td>
+                <td><code>D7</code>, <code>D8</code></td>
+                <td>Motor driver inputs</td>
+              </tr>
+              <tr>
+                <td>Ultrasonic TRIG</td>
+                <td><code>D12</code></td>
+                <td>Pulse output</td>
+              </tr>
+              <tr>
+                <td>Ultrasonic ECHO</td>
+                <td><code>D3</code></td>
+                <td>Echo input</td>
+              </tr>
+              <tr>
+                <td>Servo signal</td>
+                <td><code>D9</code></td>
+                <td>Scan servo control</td>
+              </tr>
+              <tr>
+                <td>Line sensor left</td>
+                <td><code>A0</code></td>
+                <td>Digital read in line mode</td>
+              </tr>
+              <tr>
+                <td>Line sensor right</td>
+                <td><code>A1</code></td>
+                <td>Digital read in line mode</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <div class="callout-icon">i</div>
+          <div><strong>Upload note:</strong> because Bluetooth is mapped to <code>D0</code> and <code>D1</code>,
+            disconnecting the Bluetooth module before upload may be necessary.</div>
+        </div>
+      </section>
+      <section class="section" id="power" data-title="Power Notes">
+        <div class="section-head">
+          <div>
+            <h2>Power and Reset Notes</h2>
+            <p>The logs showed that resets were caused by hardware power load around the servo and motors, not by normal
+              mode-switch code.</p>
+          </div><span class="badge">Critical lesson</span>
+        </div>
+        <div class="grid cols-2">
+          <article class="card">
+            <h3>What the logs proved</h3>
+            <ul class="check">
+              <li>In <code>logs.txt</code>, <code>[SYS] ready</code> appeared multiple times during runtime.</li>
+              <li>That means the board restarted during operation.</li>
+              <li>In <code>logs2.text</code>, the startup banner appeared only once.</li>
+              <li>So the reset source was power drop or noise, not normal logic flow.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Recommended wiring practice</h3>
+            <ul class="check">
+              <li>Do not power the servo from the Arduino 5V pin during full operation.</li>
+              <li>Do not power motors from the Arduino board.</li>
+              <li>Use an external motor supply through the motor driver.</li>
+              <li>Use a stable 5V source for the servo.</li>
+              <li>Keep a common ground across Arduino, driver, servo, Bluetooth, and sensors.</li>
+              <li>Add a <code>470uF</code> to <code>1000uF</code> capacitor near the servo supply.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <section class="section" id="files" data-title="File Guide">
+        <div class="section-head">
+          <div>
+            <h2>File Guide</h2>
+            <p>Use this as your reading roadmap if you want to understand the project step by step.</p>
+          </div><span class="badge">Where to read next</span>
+        </div>
+        <div class="grid cols-3">
+          <article class="card">
+            <h3>mode_switching.ino</h3>
+            <p>Main sketch with startup, command reading, and mode dispatch.</p>
+          </article>
+          <article class="card">
+            <h3>pin_map.h</h3>
+            <p>Single place for hardware pins.</p>
+          </article>
+          <article class="card">
+            <h3>motor_functions.h</h3>
+            <p>Low-level movement helpers.</p>
+          </article>
+          <article class="card">
+            <h3>manual.h</h3>
+            <p>Stores and executes manual commands.</p>
+          </article>
+          <article class="card">
+            <h3>line_follower.h</h3>
+            <p>Simple line sensor decisions.</p>
+          </article>
+          <article class="card">
+            <h3>ultrasonic.h</h3>
+            <p>Distance measurement and threshold checks.</p>
+          </article>
+          <article class="card">
+            <h3>servo.h</h3>
+            <p>Step-based scan servo movement.</p>
+          </article>
+          <article class="card">
+            <h3>obstacle_avoidance_v2.h</h3>
+            <p>Active obstacle state machine.</p>
+          </article>
+          <article class="card">
+            <h3>follow_me.h</h3>
+            <p>Placeholder only for now.</p>
+          </article>
+        </div>
+        <div class="footer-note">Recommended reading order: <code>mode_switching.ino</code> -> <code>pin_map.h</code> ->
+          <code>motor_functions.h</code> -> <code>manual.h</code> -> <code>line_follower.h</code> ->
+          <code>ultrasonic.h</code> -> <code>servo.h</code> -> <code>obstacle_avoidance_v2.h</code>.
+        </div>
+        </section>
+        </main>
+  </div>
+  <button id="scrolltop" type="button" aria-label="Scroll to top"><svg width="18" height="18" viewBox="0 0 24 24"
+      fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 19V5"></path>
+      <path d="m5 12 7-7 7 7"></path>
+    </svg></button>
+  <script>
+    (function () { const b = document.body, s = document.getElementById("sidebar"), o = document.getElementById("overlay"), h = document.getElementById("hamburger"), t = document.getElementById("topbarTitle"), p = document.getElementById("progress"), up = document.getElementById("scrolltop"), mq = window.matchMedia("(max-width: 780px)"), links = [...document.querySelectorAll(".nav-link")], items = links.map(l => { const x = document.querySelector(l.getAttribute("href")); return x ? { l, x } : null }).filter(Boolean); function drawer(open) { const show = !!open && mq.matches; s.classList.toggle("open", show); o.classList.toggle("show", show); b.classList.toggle("drawer-open", show); h.setAttribute("aria-expanded", String(show)) } h.addEventListener("click", () => drawer(!s.classList.contains("open"))); o.addEventListener("click", () => drawer(false)); document.addEventListener("keydown", e => { if (e.key === "Escape") drawer(false) }); mq.addEventListener("change", e => { if (!e.matches) drawer(false) }); links.forEach(l => l.addEventListener("click", () => { if (mq.matches) drawer(false) })); function scrollUI() { const top = window.scrollY || window.pageYOffset, max = document.documentElement.scrollHeight - window.innerHeight, val = max > 0 ? top / max * 100 : 0; p.style.width = val + "%"; up.classList.toggle("show", top > 320) } up.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" })); const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; items.forEach(i => { const a = i.x === e.target; i.l.classList.toggle("active", a); if (a) t.textContent = e.target.dataset.title || e.target.id }) }), { rootMargin: "-32% 0px -52% 0px", threshold: .1 }); items.forEach(i => io.observe(i.x)); scrollUI(); window.addEventListener("scroll", scrollUI, { passive: true }) })();
+  </script>
+  </body>
+
+</html>
