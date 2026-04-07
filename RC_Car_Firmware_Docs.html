@@ -4,28 +4,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RC Car Firmware Docs</title>
+  <title>RC Car Firmware Flow Docs</title>
   <style>
     :root {
-      --sb: 280px;
-      --top: 64px;
-      --bg: #f5eee4;
-      --bg2: #efe1cf;
+      --sb: 286px;
+      --top: 66px;
+      --bg: #f6eee5;
+      --bg2: #efe0cf;
       --panel: #fffdf8;
-      --glass: rgba(255, 251, 245, .88);
-      --dark: #182125;
-      --dark2: #0f171a;
+      --glass: rgba(255, 251, 245, .9);
+      --dark: #182126;
+      --dark2: #10181b;
       --ink: #202733;
-      --muted: #5b6673;
-      --line: rgba(90, 68, 41, .14);
+      --muted: #5a6674;
+      --line: rgba(94, 71, 42, .14);
       --brand: #c95b2c;
       --brand2: #8b3319;
       --teal: #0f766e;
-      --blue: #275dad;
-      --warn: #b56d1c;
-      --ok: #238759;
+      --blue: #285dac;
+      --warn: #b56c1b;
+      --ok: #218457;
+      --violet: #7c5ab6;
       --shadow: 0 18px 40px rgba(27, 18, 9, .12);
-      --r: 22px;
       --ease: 180ms cubic-bezier(.22, 1, .36, 1)
     }
 
@@ -60,9 +60,9 @@
 
     code {
       font: 14px "Cascadia Code", Consolas, "Courier New", monospace;
-      background: rgba(39, 93, 173, .08);
+      background: rgba(40, 93, 172, .08);
       color: var(--blue);
-      border: 1px solid rgba(39, 93, 173, .14);
+      border: 1px solid rgba(40, 93, 172, .14);
       padding: .12rem .45rem;
       border-radius: 999px
     }
@@ -80,7 +80,7 @@
     #overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 26, .46);
+      background: rgba(15, 24, 27, .48);
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--ease);
@@ -108,13 +108,13 @@
     }
 
     .sb-head {
-      padding: 1rem 1.5rem;
+      padding: 1.35rem 1.2rem 1rem;
       border-bottom: 1px solid rgba(255, 255, 255, .08)
     }
 
     .eyebrow {
       display: inline-flex;
-      padding: .28rem .7rem;
+      padding: .28rem .72rem;
       border-radius: 999px;
       background: rgba(201, 91, 44, .18);
       color: #ffd5c6;
@@ -125,8 +125,8 @@
     }
 
     .sb-head h1 {
-      margin: .9rem 0 .4rem;
-      font: 700 1.45rem/1.05 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif
+      margin: .92rem 0 .42rem;
+      font: 700 1.5rem/1.03 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif
     }
 
     .sb-head p,
@@ -138,11 +138,11 @@
     .sb-scroll {
       flex: 1;
       overflow: auto;
-      padding: 1rem .7rem
+      padding: 1rem .72rem
     }
 
     .sb-label {
-      padding: .65rem .5rem .35rem;
+      padding: .68rem .5rem .35rem;
       color: rgba(237, 244, 243, .38);
       font-size: .75rem;
       font-weight: 700;
@@ -224,17 +224,17 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      min-height: 64px;
+      min-height: var(--top);
       padding: 0 1.4rem;
-      background: rgba(255, 251, 245, .8);
-      border-bottom: 1px solid rgba(90, 68, 41, .1);
+      background: rgba(255, 251, 245, .82);
+      border-bottom: 1px solid rgba(94, 71, 42, .1);
       backdrop-filter: blur(14px)
     }
 
     #hamburger {
       display: none;
-      width: 2.7rem;
-      height: 2.7rem;
+      width: 2.75rem;
+      height: 2.75rem;
       border: 1px solid var(--line);
       border-radius: 14px;
       background: var(--panel);
@@ -292,12 +292,12 @@
     }
 
     .tag.blue {
-      background: rgba(39, 93, 173, .1);
+      background: rgba(40, 93, 172, .1);
       color: var(--blue)
     }
 
     #content {
-      width: min(1060px, 100%);
+      width: min(1140px, 100%);
       margin: 0 auto;
       padding: 2rem 1.6rem 4rem
     }
@@ -307,7 +307,7 @@
       background: var(--glass);
       border: 1px solid rgba(255, 255, 255, .75);
       box-shadow: 0 12px 28px rgba(27, 18, 9, .08);
-      border-radius: 26px
+      border-radius: 28px
     }
 
     .hero {
@@ -318,34 +318,23 @@
     }
 
     .hero-grid,
-    .grid,
-    .flow,
-    .steps,
-    .split {
+    .grid {
       display: grid;
       gap: 1rem
     }
 
     .hero-grid {
-      grid-template-columns: minmax(0, 1.3fr) minmax(240px, .82fr)
+      grid-template-columns: minmax(0, 1.28fr) minmax(250px, .82fr)
     }
 
     .hero h1 {
       margin: .95rem 0 .6rem;
-      font: 700 clamp(2rem, 4vw, 3.2rem)/.97 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
+      font: 700 clamp(2rem, 4vw, 3.35rem)/.97 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
       letter-spacing: -.03em
     }
 
-    .hero p,
-    .section-head p,
-    .card p,
-    .node p,
-    .step p,
-    .sb-foot p {
-      color: inherit
-    }
-
     .hero p {
+      margin: 0;
       color: rgba(255, 246, 241, .86)
     }
 
@@ -387,7 +376,7 @@
     .section {
       margin-top: 1.25rem;
       padding: 1.3rem;
-      scroll-margin-top: 82px
+      scroll-margin-top: 84px
     }
 
     .section-head {
@@ -400,21 +389,20 @@
 
     .section-head h2 {
       margin: 0;
-      font: 700 1.55rem/1.05 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif
+      font: 700 1.58rem/1.05 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif
     }
 
     .section-head p,
     .card p,
-    .node p,
-    .step p,
+    .legend-text,
     .footer-note,
-    .check {
+    .diagram-note li {
       margin: .4rem 0 0;
       color: var(--muted)
     }
 
     .badge {
-      padding: .46rem .72rem;
+      padding: .46rem .74rem;
       border-radius: 999px;
       background: #fff0dd;
       color: var(--warn);
@@ -433,14 +421,11 @@
       grid-template-columns: repeat(3, minmax(0, 1fr))
     }
 
-    .grid.cols-2,
-    .split {
+    .grid.cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr))
     }
 
-    .card,
-    .node,
-    .step {
+    .card {
       padding: 1rem;
       border-radius: 20px;
       background: var(--panel);
@@ -448,11 +433,13 @@
       box-shadow: 0 10px 22px rgba(27, 18, 9, .06)
     }
 
-    .card h3,
-    .node h3,
-    .step h3 {
+    .card h3 {
       margin: 0;
       font-size: 1rem
+    }
+
+    .card p {
+      margin: .55rem 0 0
     }
 
     .value {
@@ -479,23 +466,23 @@
     }
 
     .mini.ok {
-      background: rgba(35, 135, 89, .12);
+      background: rgba(33, 132, 87, .12);
       color: var(--ok)
     }
 
     .mini.info {
-      background: rgba(39, 93, 173, .1);
+      background: rgba(40, 93, 172, .1);
       color: var(--blue)
     }
 
     .mini.warn {
-      background: rgba(181, 109, 28, .12);
+      background: rgba(181, 108, 27, .12);
       color: var(--warn)
     }
 
     .mini.mute {
-      background: rgba(90, 68, 41, .08);
-      color: var(--muted)
+      background: rgba(124, 90, 182, .1);
+      color: var(--violet)
     }
 
     .callout {
@@ -506,7 +493,7 @@
       margin-top: 1rem;
       border-radius: 18px;
       background: linear-gradient(135deg, #fff9ef, #fff3df);
-      border: 1px solid rgba(181, 109, 28, .16)
+      border: 1px solid rgba(181, 108, 27, .16)
     }
 
     .callout-icon {
@@ -515,121 +502,161 @@
       border-radius: 14px;
       display: grid;
       place-items: center;
-      background: rgba(181, 109, 28, .12);
+      background: rgba(181, 108, 27, .12);
       color: var(--warn);
       font-weight: 800
     }
 
-    .row {
-      display: grid;
-      gap: 1rem
-    }
-
-    .row.cols-4 {
-      grid-template-columns: repeat(4, minmax(0, 1fr))
-    }
-
-    .row.cols-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr))
-    }
-
-    .row.cols-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr))
-    }
-
-    .node.start {
-      background: linear-gradient(135deg, #ffe1d4, #fff5ef);
-      border-color: rgba(201, 91, 44, .22)
-    }
-
-    .node.logic {
-      background: linear-gradient(135deg, #edf8f6, #fff);
-      border-color: rgba(15, 118, 110, .18)
-    }
-
-    .node.note {
-      background: linear-gradient(135deg, #edf4ff, #fff);
-      border-color: rgba(39, 93, 173, .18)
-    }
-
-    .node small {
-      display: inline-block;
-      margin-top: .7rem;
-      color: #818b96;
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase
-    }
-
-    .arrow {
-      text-align: center;
-      font-weight: 800;
-      color: #7a8591;
-      font-size: .76rem;
-      letter-spacing: .12em;
-      text-transform: uppercase
-    }
-
-    .steps {
-      grid-template-columns: repeat(4, minmax(0, 1fr))
-    }
-
-    .step {
-      position: relative
-    }
-
-    .step span {
-      position: absolute;
-      top: -.65rem;
-      left: 1rem;
-      width: 2.15rem;
-      height: 2.15rem;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--brand), #ea8457);
-      color: #fff;
-      font-size: .9rem;
-      font-weight: 800
-    }
-
-    .check {
-      padding-left: 1.05rem
-    }
-
-    .table-shell {
-      overflow: auto;
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+      padding: 1rem;
+      border-radius: 20px;
+      background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--panel)
+      margin-top: 1rem
     }
 
-    table {
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .38rem .6rem;
+      border-radius: 999px;
+      background: rgba(94, 71, 42, .05);
+      font-size: .78rem
+    }
+
+    .sw {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, .08)
+    }
+
+    .legend-text {
+      width: 100%
+    }
+
+    .svg-shell {
+      overflow: auto;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #fffefb, #fff8f0);
+      box-shadow: 0 10px 22px rgba(27, 18, 9, .06);
+      padding: 1rem
+    }
+
+    .svg-shell svg {
+      display: block;
       width: 100%;
-      border-collapse: collapse;
-      min-width: 560px
+      height: auto;
+      min-width: 920px
     }
 
-    th,
-    td {
-      text-align: left;
-      padding: .82rem .92rem;
-      border-bottom: 1px solid var(--line);
-      vertical-align: top
+    .diagram-note {
+      margin-top: 1rem
     }
 
-    th {
-      font-size: .8rem;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: #7d8793
+    .diagram-note ul {
+      margin: .55rem 0 0;
+      padding-left: 1rem
+    }
+
+    .d-bg {
+      fill: url(#grid)
+    }
+
+    .d-line {
+      stroke: #9ea8b5;
+      stroke-width: 3;
+      fill: none;
+      marker-end: url(#arrow)
+    }
+
+    .d-soft {
+      stroke: #c7ced8;
+      stroke-width: 2;
+      fill: none;
+      marker-end: url(#arrowSoft)
+    }
+
+    .d-split {
+      stroke-dasharray: 8 8
+    }
+
+    .d-label {
+      font: 700 13px "Segoe UI", sans-serif;
+      fill: #667382;
+      letter-spacing: 1.2px;
+      text-transform: uppercase
+    }
+
+    .d-text {
+      font: 600 18px "Segoe UI", sans-serif;
+      fill: #23303d
+    }
+
+    .d-sub {
+      font: 500 13px "Segoe UI", sans-serif;
+      fill: #61707f
+    }
+
+    .d-term rect {
+      fill: #fde3d6;
+      stroke: #c95b2c;
+      stroke-width: 2.5
+    }
+
+    .d-proc rect {
+      fill: #fff8ef;
+      stroke: #d7bea3;
+      stroke-width: 2
+    }
+
+    .d-action rect {
+      fill: #edf8f5;
+      stroke: #0f766e;
+      stroke-width: 2
+    }
+
+    .d-note rect {
+      fill: #edf4ff;
+      stroke: #285dac;
+      stroke-width: 2
+    }
+
+    .d-warn rect {
+      fill: #fff2de;
+      stroke: #b56c1b;
+      stroke-width: 2
+    }
+
+    .d-placeholder rect {
+      fill: #f4f0fb;
+      stroke: #7c5ab6;
+      stroke-width: 2;
+      stroke-dasharray: 8 6
+    }
+
+    .d-decision polygon {
+      fill: #eef5ff;
+      stroke: #285dac;
+      stroke-width: 2.2
+    }
+
+    .d-outline {
+      fill: #fffdf8;
+      stroke: #d8c5ab;
+      stroke-width: 1.5
     }
 
     .footer-note {
       padding: 1rem 1.05rem;
       border-radius: 18px;
       background: rgba(255, 255, 255, .58);
-      border: 1px solid rgba(90, 68, 41, .1)
+      border: 1px solid rgba(94, 71, 42, .1)
     }
 
     #scrolltop {
@@ -658,14 +685,11 @@
     }
 
     @media (max-width:1080px) {
-
-      .grid.cols-4,
-      .steps {
+      .grid.cols-4 {
         grid-template-columns: repeat(2, minmax(0, 1fr))
       }
 
-      .grid.cols-3,
-      .row.cols-4 {
+      .grid.cols-3 {
         grid-template-columns: repeat(2, minmax(0, 1fr))
       }
     }
@@ -674,10 +698,8 @@
 
       .hero-grid,
       .grid.cols-2,
-      .split,
-      .row.cols-2,
-      .row.cols-3,
-      .row.cols-4 {
+      .grid.cols-3,
+      .grid.cols-4 {
         grid-template-columns: 1fr
       }
 
@@ -709,7 +731,7 @@
       }
 
       #content {
-        padding: 1% 1%
+        padding: 1.15rem 1rem 3.6rem
       }
 
       .hero,
@@ -722,21 +744,15 @@
       }
 
       .section {
-        padding: 1rem 1rem
+        padding: 1.1rem
       }
 
       .section-head {
         flex-direction: column
       }
 
-      .grid.cols-4,
-      .grid.cols-3,
-      .steps {
-        grid-template-columns: 1fr
-      }
-
-      table {
-        min-width: 500px
+      .svg-shell svg {
+        min-width: 860px
       }
     }
 
@@ -750,530 +766,1583 @@
       }
     }
   </style>
+  <style>
+    body {
+      background:
+        radial-gradient(circle at 10% 14%, rgba(15, 118, 110, .12), transparent 22%),
+        radial-gradient(circle at 88% 12%, rgba(201, 91, 44, .18), transparent 20%),
+        linear-gradient(180deg, #f7f1e8 0%, #eee3d5 52%, #e8d7c4 100%);
+    }
+
+    #overlay,
+    #sidebar,
+    #topbar,
+    #hamburger {
+      display: none !important;
+    }
+
+    #shell {
+      margin-left: 0;
+      min-height: auto;
+    }
+
+    #content {
+      width: min(1260px, calc(100% - 2rem));
+      padding: 1.35rem 0 4rem;
+    }
+
+    .masthead {
+      position: relative;
+    }
+
+    .masthead::before,
+    .masthead::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(14px);
+      pointer-events: none;
+      opacity: .7;
+    }
+
+    .masthead::before {
+      width: 220px;
+      height: 220px;
+      right: 4%;
+      top: 1rem;
+      background: radial-gradient(circle, rgba(201, 91, 44, .22), transparent 68%);
+    }
+
+    .masthead::after {
+      width: 180px;
+      height: 180px;
+      left: 4%;
+      top: 2rem;
+      background: radial-gradient(circle, rgba(15, 118, 110, .18), transparent 70%);
+    }
+
+    .masthead-inner,
+    .dock {
+      width: min(1260px, calc(100% - 2rem));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .masthead-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr);
+      gap: 1rem;
+      padding: 1.35rem;
+      border-radius: 30px;
+      color: #fff7f1;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, .12), transparent 30%),
+        linear-gradient(135deg, #10181b, #123741 54%, #b7522c);
+      box-shadow: 0 28px 60px rgba(22, 14, 7, .18);
+    }
+
+    .brand-stack {
+      display: grid;
+      gap: .8rem;
+      align-content: start;
+    }
+
+    .brand-stack h1 {
+      margin: 0;
+      font: 700 clamp(2rem, 4vw, 3.2rem)/.96 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
+      letter-spacing: -.03em;
+    }
+
+    .brand-stack p {
+      margin: 0;
+      max-width: 720px;
+      color: rgba(255, 247, 241, .82);
+    }
+
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .75rem;
+      align-content: start;
+    }
+
+    .status-card {
+      padding: .95rem 1rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .1);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+    }
+
+    .status-label {
+      display: block;
+      font-size: .74rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255, 247, 241, .62);
+    }
+
+    .status-card strong {
+      display: block;
+      margin-top: .34rem;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .dock {
+      position: sticky;
+      z-index: 70;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding: .82rem 1rem;
+      border-radius: 22px;
+      background: rgba(255, 252, 247, .84);
+      border: 1px solid rgba(94, 71, 42, .12);
+      box-shadow: 0 18px 30px rgba(27, 18, 9, .1);
+      backdrop-filter: blur(18px);
+    }
+
+    .dock-copy {
+      min-width: max-content;
+      display: grid;
+      gap: .08rem;
+    }
+
+    .dock-kicker {
+      font-size: .72rem;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      color: #7a8591;
+    }
+
+    #activeSection {
+      font: 700 1rem/1.15 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
+      color: var(--ink);
+    }
+
+    .section-nav {
+      display: flex;
+      gap: .6rem;
+      overflow: auto;
+      padding-bottom: .1rem;
+      scrollbar-width: none;
+    }
+
+    .section-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-chip {
+      white-space: nowrap;
+      padding: .62rem .95rem;
+      border-radius: 999px;
+      border: 1px solid rgba(94, 71, 42, .12);
+      background: rgba(255, 255, 255, .74);
+      color: #43505d;
+      font-size: .88rem;
+      font-weight: 700;
+      transition: transform var(--ease), background var(--ease), color var(--ease), border-color var(--ease);
+    }
+
+    .nav-chip:hover,
+    .nav-chip.active {
+      transform: translateY(-1px);
+      background: #182126;
+      color: #fff;
+      border-color: #182126;
+    }
+
+    .hero,
+    .section {
+      border-radius: 30px;
+      box-shadow: 0 20px 38px rgba(27, 18, 9, .09);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 82% 18%, rgba(255, 255, 255, .14), transparent 22%),
+        linear-gradient(135deg, #162228, #0f3f4b 52%, #d05f33);
+      box-shadow: 0 28px 56px rgba(18, 12, 6, .18);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -8% -38% auto;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, .16), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-panel {
+      background: rgba(255, 255, 255, .12);
+      border: 1px solid rgba(255, 255, 255, .16);
+    }
+
+    .section {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255, 254, 251, .96), rgba(255, 249, 240, .92));
+      border: 1px solid rgba(255, 255, 255, .72);
+    }
+
+    .section::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 5px;
+      background: linear-gradient(90deg, rgba(15, 118, 110, .55), rgba(201, 91, 44, .6), rgba(40, 93, 172, .45));
+      opacity: .7;
+    }
+
+    .section-head {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 1.15rem;
+    }
+
+    .section-head h2 {
+      font-size: 1.68rem;
+    }
+
+    .badge {
+      background: linear-gradient(180deg, #fff2de, #ffe9cb);
+      border: 1px solid rgba(181, 108, 27, .15);
+      box-shadow: 0 8px 18px rgba(181, 108, 27, .08);
+    }
+
+    .legend {
+      background: linear-gradient(180deg, #fffefb, #fff8f0);
+      border-radius: 24px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8);
+    }
+
+    .legend-item {
+      background: #fff;
+      border: 1px solid rgba(94, 71, 42, .08);
+      box-shadow: 0 8px 14px rgba(27, 18, 9, .04);
+    }
+
+    .svg-shell {
+      position: relative;
+      padding: 1rem;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at top, rgba(18, 56, 64, .05), transparent 40%),
+        linear-gradient(180deg, #fffefb, #fff7ed);
+      border: 1px solid rgba(94, 71, 42, .12);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .86), 0 14px 26px rgba(27, 18, 9, .06);
+    }
+
+    .diagram-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .diagram-kicker {
+      margin: 0 0 .18rem;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #7a8591;
+    }
+
+    .diagram-toolbar h3 {
+      margin: 0;
+      font: 700 1.08rem/1.1 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
+      color: #182126;
+    }
+
+    .diagram-tools {
+      display: flex;
+      gap: .45rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .diagram-btn {
+      min-width: 42px;
+      height: 42px;
+      padding: 0 .82rem;
+      border: 1px solid rgba(94, 71, 42, .12);
+      border-radius: 14px;
+      background: #fff;
+      color: #182126;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 800;
+      box-shadow: 0 10px 18px rgba(27, 18, 9, .06);
+      transition: transform var(--ease), background var(--ease), color var(--ease), border-color var(--ease);
+    }
+
+    .diagram-btn:hover {
+      transform: translateY(-1px);
+      background: #182126;
+      color: #fff;
+      border-color: #182126;
+    }
+
+    .diagram-btn--wide {
+      min-width: 76px;
+      font-size: .9rem;
+    }
+
+    .diagram-stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .diagram-viewport {
+      position: relative;
+      min-height: 540px;
+      overflow: hidden;
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, .92)),
+        linear-gradient(135deg, rgba(15, 118, 110, .04), rgba(40, 93, 172, .02));
+      border: 1px solid rgba(94, 71, 42, .1);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8);
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .diagram-viewport.is-dragging {
+      cursor: grabbing;
+    }
+
+    .diagram-viewport::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(94, 71, 42, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(94, 71, 42, .04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      opacity: .65;
+    }
+
+    .diagram-canvas {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+
+    .diagram-canvas svg {
+      display: block;
+      max-width: none;
+      height: auto;
+      filter: drop-shadow(0 14px 24px rgba(27, 18, 9, .06));
+    }
+
+    .diagram-status {
+      position: absolute;
+      left: 1rem;
+      bottom: 1rem;
+      padding: .48rem .82rem;
+      border-radius: 999px;
+      background: rgba(24, 33, 38, .84);
+      color: #fff;
+      font-size: .78rem;
+      letter-spacing: .02em;
+      box-shadow: 0 10px 18px rgba(15, 24, 27, .16);
+    }
+
+    .diagram-detail {
+      position: relative;
+      min-height: 320px;
+      padding: 1.1rem;
+      border-radius: 24px;
+      color: #eef4f3;
+      background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, .08), transparent 30%),
+        linear-gradient(180deg, #10181b, #192228);
+      border: 1px solid rgba(255, 255, 255, .08);
+      box-shadow: 0 20px 32px rgba(15, 24, 27, .18);
+    }
+
+    .diagram-detail::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 4px;
+      border-radius: 24px 24px 0 0;
+      background: linear-gradient(90deg, rgba(15, 118, 110, .78), rgba(201, 91, 44, .8), rgba(40, 93, 172, .65));
+    }
+
+    .detail-kicker {
+      display: inline-flex;
+      margin-top: .25rem;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(237, 244, 243, .58);
+    }
+
+    .detail-title {
+      margin: .55rem 0 .42rem;
+      font: 700 1.28rem/1.05 "Trebuchet MS", "Gill Sans", "Segoe UI", sans-serif;
+      color: #fff;
+    }
+
+    .detail-type {
+      display: inline-flex;
+      padding: .34rem .68rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .08);
+      color: #e7f1f0;
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .detail-desc {
+      margin: .85rem 0 0;
+      color: rgba(237, 244, 243, .76);
+    }
+
+    .detail-meta {
+      display: grid;
+      gap: .75rem;
+      margin-top: 1rem;
+    }
+
+    .detail-hint {
+      padding: .8rem .9rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .06);
+      color: rgba(237, 244, 243, .78);
+    }
+
+    .detail-hint strong {
+      color: #fff;
+    }
+
+    .diagram-clear {
+      margin-top: 1rem;
+      width: 100%;
+      padding: .82rem .9rem;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .08);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform var(--ease), background var(--ease), border-color var(--ease);
+    }
+
+    .diagram-clear:hover {
+      transform: translateY(-1px);
+      background: rgba(255, 255, 255, .12);
+      border-color: rgba(255, 255, 255, .16);
+    }
+
+    .flow-link {
+      cursor: pointer;
+      outline: none;
+    }
+
+    .flow-link rect,
+    .flow-link polygon {
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: stroke var(--ease), stroke-width var(--ease), transform var(--ease), filter var(--ease);
+    }
+
+    .flow-link text {
+      transition: fill var(--ease);
+    }
+
+    .flow-link:hover rect,
+    .flow-link:hover polygon,
+    .flow-link.is-jumping rect,
+    .flow-link.is-jumping polygon {
+      stroke: #c95b2c !important;
+      stroke-width: 3.2 !important;
+      transform: translateY(-2px);
+      filter: drop-shadow(0 16px 18px rgba(201, 91, 44, .14));
+    }
+
+    .flow-link:hover text,
+    .flow-link.is-jumping text {
+      fill: #1a232d;
+    }
+
+    .flow-link:focus-visible rect,
+    .flow-link:focus-visible polygon {
+      stroke: #0f766e !important;
+      stroke-width: 3.2 !important;
+      filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+    }
+
+    .detail-links {
+      display: grid;
+      gap: .7rem;
+      margin-top: .2rem;
+    }
+
+    .detail-link {
+      display: grid;
+      gap: .14rem;
+      padding: .82rem .9rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .06);
+      color: rgba(237, 244, 243, .84);
+      text-decoration: none;
+      transition: transform var(--ease), background var(--ease), border-color var(--ease);
+    }
+
+    .detail-link:hover {
+      transform: translateY(-1px);
+      background: rgba(255, 255, 255, .1);
+      border-color: rgba(255, 255, 255, .12);
+    }
+
+    .detail-link strong {
+      color: #fff;
+    }
+
+    .detail-link span {
+      font-size: .86rem;
+      color: rgba(237, 244, 243, .68);
+    }
+
+    .section-flash {
+      animation: sectionFlash 1.55s ease;
+    }
+
+    @keyframes sectionFlash {
+      0% {
+        box-shadow: 0 0 0 rgba(201, 91, 44, 0);
+      }
+
+      35% {
+        box-shadow: 0 0 0 4px rgba(201, 91, 44, .16), 0 26px 48px rgba(201, 91, 44, .12);
+      }
+
+      100% {
+        box-shadow: 0 20px 38px rgba(27, 18, 9, .09);
+      }
+    }
+
+    .diagram-note {
+      margin-top: 1rem;
+      padding: 0 .15rem;
+    }
+
+    .footer-note {
+      background: linear-gradient(180deg, rgba(255, 255, 255, .74), rgba(255, 251, 245, .96));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .78);
+    }
+
+    @media (max-width:1080px) {
+
+      .masthead-inner,
+      .diagram-stage {
+        grid-template-columns: 1fr;
+      }
+
+      .status-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .diagram-detail {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width:780px) {
+      .masthead {
+        padding: .8rem .7rem 0;
+      }
+
+      .masthead-inner,
+      .dock {
+        width: calc(100% - 1.4rem);
+      }
+
+      .masthead-inner {
+        padding: 1.1rem;
+      }
+
+      .dock {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .status-strip {
+        grid-template-columns: 1fr;
+      }
+
+      #content {
+        width: calc(100% - 1.4rem);
+        padding-top: 1rem;
+      }
+
+      .section-nav {
+        width: 100%;
+      }
+
+      .nav-chip {
+        font-size: .84rem;
+      }
+
+      .diagram-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .diagram-tools {
+        justify-content: flex-start;
+      }
+
+      .diagram-viewport {
+        min-height: 430px;
+      }
+    }
+  </style>
 </head>
 
 <body>
   <div id="progress" aria-hidden="true"></div>
-  <div id="overlay" aria-hidden="true"></div>
-  <aside id="sidebar" aria-label="Documentation sidebar">
-    <div class="sb-head">
-      <h1>RC Car Firmware</h1>
+  <header class="masthead">
+    <div class="dock">
+      <div class="dock-copy">
+        <span class="dock-kicker">Documentation</span>
+        <strong>RC Car Firmware</strong>
+      </div>
+      <nav class="section-nav" aria-label="Section navigation">
+        <a class="nav-chip active" href="#overview">Overview</a>
+        <a class="nav-chip" href="#legend">Legend</a>
+        <a class="nav-chip" href="#master-flow">Master Flow</a>
+        <a class="nav-chip" href="#obstacle-flow">Obstacle Flow</a>
+        <a class="nav-chip" href="#command-flow">Command Flow</a>
+        <a class="nav-chip" href="#reset-flow">Reset Flow</a>
+        <a class="nav-chip" href="#pin-reference">Pin Reference</a>
+      </nav>
     </div>
-    <div class="sb-scroll">
-      <div class="sb-label">Start Here</div>
-      <a class="nav-link active" href="#overview"><span class="nav-index">01</span><span>Overview</span></a>
-      <a class="nav-link" href="#architecture"><span class="nav-index">02</span><span>Architecture</span></a>
-      <a class="nav-link" href="#flow"><span class="nav-index">03</span><span>Main Flow</span></a>
-      <div class="sb-label">Core Logic</div>
-      <a class="nav-link" href="#modes"><span class="nav-index">04</span><span>Modes</span></a>
-      <a class="nav-link" href="#obstacle"><span class="nav-index">05</span><span>Obstacle States</span></a>
-      <a class="nav-link" href="#commands"><span class="nav-index">06</span><span>Commands</span></a>
-      <div class="sb-label">Reference</div>
-      <a class="nav-link" href="#pins"><span class="nav-index">07</span><span>Pin Map</span></a>
-      <a class="nav-link" href="#power"><span class="nav-index">08</span><span>Power Notes</span></a>
-      <a class="nav-link" href="#files"><span class="nav-index">09</span><span>File Guide</span></a>
-    </div>
-  </aside>
-  <div id="shell">
-    <header id="topbar">
-      <button id="hamburger" type="button" aria-label="Open sidebar navigation" aria-expanded="false"
-        aria-controls="sidebar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2.2" stroke-linecap="round">
-          <path d="M4 7h16"></path>
-          <path d="M4 12h16"></path>
-          <path d="M4 17h16"></path>
-        </svg></button>
-      <div class="tb-copy"><span class="tb-kicker">Documentation</span><span class="tb-title"
-          id="topbarTitle">Overview</span></div>
-      <div class="tb-tags"><span class="tag brand">Arduino Uno</span><span class="tag teal">Obstacle Default</span><span
-          class="tag blue">Beginner Ready</span></div>
-    </header>
-    <main id="content">
-      <section class="hero" id="overview" data-title="Overview">
-        <div class="hero-grid">
-          <div><span class="eyebrow" style="background:rgba(255,255,255,.14);color:#fff;border:none">Mode Switching RC
-              Car Firmware</span>
-            <h1>Understand the project faster and debug it with less confusion.</h1>
-            <p>This page explains the current Arduino firmware in simple language: startup, Bluetooth command reading,
-              mode switching, obstacle avoidance, pin mapping, and the reset lesson learned from the logs.</p>
-            <div class="hero-badges"><span>Default mode: OBS_MODE</span><span>Obstacle logic is
-                active</span><span>Manual and line follower work</span><span>Follow-me is a placeholder</span></div>
-          </div>
-          <div class="hero-panel">
-            <h2>Remember these first</h2>
-            <ul>
-              <li><strong>setup()</strong> runs once, then <strong>loop()</strong> repeats forever.</li>
-              <li>The firmware starts in obstacle mode.</li>
-              <li><b><i>[SYS] ready</i></b> appearing again means reset.</li>
-              <li>The reset issue came from power load, not normal logic flow.</li>
-            </ul>
-          </div>
+  </header>
+  <main id="content">
+    <section class="hero" id="overview" data-title="Overview">
+      <div class="hero-grid">
+        <div><span class="eyebrow" style="background:rgba(255,255,255,.14);color:#fff;border:none">Mode Switching RC
+            Car Firmware</span>
+          <h1>A real flow-diagram page for the project, not just notes.</h1>
+          <p>This website now focuses on visual flow. It shows how the firmware starts, reads Bluetooth input,
+            switches modes, scans with the ultrasonic servo system, and how the reset issue was diagnosed from the
+            logs.</p>
+          <div class="hero-badges"><span>Default mode: OBS_MODE</span><span>Obstacle logic is
+              active</span><span>Manual and line follower work</span><span>Follow-me is a placeholder</span></div>
         </div>
-      </section>
-      <section class="section" id="architecture" data-title="Architecture">
-        <div class="section-head">
-          <div>
-            <h2>Project Architecture</h2>
-            <p>The codebase is small and modular. The main sketch decides the mode, and each helper file handles one
-              focused job.</p>
-          </div><span class="badge">How it is organized</span>
+        <div class="hero-panel">
+          <h2>How to explore this page</h2>
+          <ul>
+            <li>Start with the master firmware flow to understand startup and loop routing.</li>
+            <li>Click any block inside a diagram to open its inspector panel.</li>
+            <li>Drag the canvas to pan and use the zoom controls or mouse wheel to zoom.</li>
+            <li>Finish with the reset flow and pin map for hardware-level debugging.</li>
+          </ul>
         </div>
-        <div class="grid cols-4">
-          <article class="card">
-            <h3>Main sketch</h3>
-            <p><code>mode_switching.ino</code> contains startup, Bluetooth reading, mode switching, and loop dispatch.
-            </p><span class="value">1 core controller</span>
-          </article>
-          <article class="card">
-            <h3>Motion layer</h3>
-            <p><code>motor_functions.h</code> contains forward, backward, turning, diagonal, and stop helpers.</p><span
-              class="value">9 movement paths</span>
-          </article>
-          <article class="card">
-            <h3>Sensor layer</h3>
-            <p><code>ultrasonic.h</code> and <code>servo.h</code> work together during obstacle scanning.</p><span
-              class="value">2 active sensors</span>
-          </article>
-          <article class="card">
-            <h3>Mode entries</h3>
-            <p>Obstacle, manual, line follower, and follow-me placeholder are all selected from the same loop.</p><span
-              class="value">4 mode branches</span>
-          </article>
-        </div>
-        <div class="callout">
-          <div class="callout-icon">!</div>
-          <div><strong>Best reading order for freshers:</strong> <code>mode_switching.ino</code> ->
-            <code>pin_map.h</code> -> <code>motor_functions.h</code> -> <code>manual.h</code> ->
-            <code>line_follower.h</code> -> <code>ultrasonic.h</code> -> <code>servo.h</code> ->
-            <code>obstacle_avoidance_v2.h</code>.
-          </div>
-        </div>
-      </section>
-      <section class="section" id="flow" data-title="Main Flow">
-        <div class="section-head">
-          <div>
-            <h2>Main Firmware Flow</h2>
-            <p>This section shows the real runtime path of the current sketch.</p>
-          </div><span class="badge">Current behavior</span>
-        </div>
-        <div class="flow">
-          <div class="row cols-2">
-            <article class="node start">
-              <h3>1. Power on</h3>
-              <p>The board boots and enters <code>setup()</code>.</p><small>Starting point</small>
-            </article>
-            <article class="node note">
-              <h3>2. setup()</h3>
-              <p>The code opens serial, starts Bluetooth, initializes motors, line pins, ultrasonic pins, the servo, and
-                then prints <code>[SYS] ready</code>.</p><small>Runs once</small>
-            </article>
-          </div>
-          <div class="arrow">then</div>
-          <div class="row cols-4">
-            <article class="node">
-              <h3>Serial.begin(9600)</h3>
-              <p>USB serial for logs.</p><small>Debug output</small>
-            </article>
-            <article class="node">
-              <h3>BT.begin(9600)</h3>
-              <p>Bluetooth path on <code>D0</code>/<code>D1</code>.</p><small>Bluetooth</small>
-            </article>
-            <article class="node">
-              <h3>setupMotors() and setupLine()</h3>
-              <p>Motor and line sensor pins are configured.</p><small>Hardware setup</small>
-            </article>
-            <article class="node logic">
-              <h3>setupObs()</h3>
-              <p>Ultrasonic is prepared and the servo is centered at 90 degrees.</p><small>Obstacle ready</small>
-            </article>
-          </div>
-          <div class="arrow">after setup</div>
-          <div class="row cols-3">
-            <article class="node note">
-              <h3>3. Default mode</h3>
-              <p><code>currentMode</code> starts as <code>OBS_MODE</code>.</p><small>Startup state</small>
-            </article>
-            <article class="node">
-              <h3>4. readCommand()</h3>
-              <p>The sketch checks whether one Bluetooth character arrived this loop.</p><small>Input stage</small>
-            </article>
-            <article class="node logic">
-              <h3>5. switch(currentMode)</h3>
-              <p>The code runs exactly one branch: obstacle, manual, line follower, or follow-me placeholder.</p>
-              <small>Mode dispatch</small>
-            </article>
-          </div>
-        </div>
-        </section>
-        <section class="section" id="modes" data-title="Modes">
-          <div class="section-head">
-            <div>
-              <h2>Mode Guide</h2>
-              <p>Three mode paths are working today. The fourth exists but is not implemented yet.</p>
-            </div><span class="badge">Quick mode summary</span>
-          </div>
-        <div class="grid cols-2">
-          <article class="card">
-            <h3>Obstacle mode</h3>
-            <p>The default startup mode. Uses ultrasonic distance and a servo sweep to scan left and right before
-              choosing a turn direction.</p>
-            <div class="mini-row"><span class="mini ok">Working</span><span class="mini info">Default mode</span></div>
-          </article>
-          <article class="card">
-            <h3>Manual mode</h3>
-            <p>After sending <code>M</code>, the stored manual command drives the car using helpers like
-              <code>forward()</code>, <code>backward()</code>, and turns.
+      </div>
+    </section>
+
+    <section class="section" id="legend" data-title="Legend">
+      <div class="section-head">
+        <div>
+          <h2>Diagram Legend</h2>
+          <p>These color cues stay consistent across all the flowcharts below.</p>
+        </div><span class="badge">Diagram language</span>
+      </div>
+      <div class="legend">
+        <span class="legend-item"><span class="sw" style="background:#fde3d6;border-color:#c95b2c"></span>Start or
+          terminal</span>
+        <span class="legend-item"><span class="sw" style="background:#fff8ef;border-color:#d7bea3"></span>Process
+          block</span>
+        <span class="legend-item"><span class="sw" style="background:#eef5ff;border-color:#285dac"></span>Decision
+          diamond</span>
+        <span class="legend-item"><span class="sw" style="background:#edf8f5;border-color:#0f766e"></span>Mode
+          action</span>
+        <span class="legend-item"><span class="sw" style="background:#fff2de;border-color:#b56c1b"></span>Warning or
+          diagnostic path</span>
+        <span class="legend-item"><span class="sw" style="background:#f4f0fb;border-color:#7c5ab6"></span>Placeholder
+          path</span>
+        <p class="legend-text">The diagrams are based on the real current code, the existing README, and the reset
+          behavior confirmed through <code>logs.txt</code> and <code>logs2.text</code>.</p>
+      </div>
+    </section>
+
+    <section class="section" id="master-flow" data-title="Master Firmware Flow">
+      <div class="section-head">
+        <div>
+          <h2>Master Firmware Flow</h2>
+          <p>This is the top-level control diagram for the whole Arduino sketch. It begins at power-on, runs
+            <code>setup()</code>, then repeats <code>loop()</code> forever.
             </p>
-            <div class="mini-row"><span class="mini ok">Working</span><span class="mini info">Bluetooth driven</span>
+            </div><span class="badge">Complete runtime entry flow</span>
             </div>
-          </article>
-          <article class="card">
-            <h3>Line follower mode</h3>
-            <p>Reads two digital line sensors and chooses forward, left, right, or stop using simple HIGH and LOW
-              conditions.</p>
-            <div class="mini-row"><span class="mini ok">Working</span><span class="mini info">Simple logic</span></div>
-          </article>
-          <article class="card">
-            <h3>Follow-me mode</h3>
-            <p><code>followMeRSSI()</code> exists, but the real behavior is not implemented yet.</p>
-            <div class="mini-row"><span class="mini mute">Placeholder</span><span class="mini warn">No behavior
-                yet</span></div>
-          </article>
-          </div>
-          </section>
-      <section class="section" id="obstacle" data-title="Obstacle States">
-        <div class="section-head">
-          <div>
-            <h2>Obstacle Avoidance States</h2>
-            <p>The active obstacle logic behaves like a small state machine: move, scan, turn, and return to moving.</p>
-          </div><span class="badge">State machine</span>
-        </div>
-        <div class="steps">
-          <article class="step"><span>1</span>
-            <h3>MOVE</h3>
-            <p>Update speed and check front distance. If clear, keep speed high. If close enough, go to SEARCH.</p>
-          </article>
-          <article class="step"><span>2</span>
-            <h3>SEARCH LEFT</h3>
-            <p>Servo moves toward 170 degrees and stores <code>leftDist</code>.</p>
-          </article>
-          <article class="step"><span>3</span>
-            <h3>SEARCH RIGHT</h3>
-            <p>Servo moves toward 10 degrees and stores <code>rightDist</code>.</p>
-          </article>
-          <article class="step"><span>4</span>
-            <h3>TURN</h3>
-            <p>Choose a diagonal turn, recenter the servo, and return to MOVE.</p>
-          </article>
-        </div>
-        <div class="split" style="margin-top:1rem">
-          <article class="card">
-            <h3>Emergency stop-distance check</h3>
-            <ul class="check">
-              <li>If the state is not TURN, the code measures <code>stopDist</code>.</li>
-              <li>If <code>stopDist &lt;= STOP_DIST</code>, it immediately calls <code>backward()</code>.</li>
-              <li>It sets <code>currentSpeed = 0</code> and returns.</li>
-              <li>This safety branch runs before regular scan logic.</li>
-            </ul>
-          </article>
-          <article class="card">
-            <h3>Key constants</h3>
-            <ul class="check">
-              <li><code>BREAK_DIST = 50</code></li>
-              <li><code>STOP_DIST = 10</code></li>
-              <li><code>HIGHEST_SPEED = 180</code></li>
-              <li><code>LOW_SPEED = 20</code></li>
-              <li><code>CENTER_ANGLE = 90</code></li>
-              <li><code>LEFT_SCAN_ANGLE = 170</code></li>
-              <li><code>RIGHT_SCAN_ANGLE = 10</code></li>
-            </ul>
-          </article>
-        </div>
-      </section>
-      <section class="section" id="commands" data-title="Commands">
-        <div class="section-head">
-          <div>
-            <h2>Bluetooth Commands</h2>
-            <p>The current sketch reads a single Bluetooth character at a time. That is why the live code reacts to
-              single digit speed input instead of long packet strings.</p>
-          </div><span class="badge">Input logic</span>
-        </div>
-        <div class="row cols-3">
-          <article class="node logic">
-            <h3>Mode selection</h3>
-            <p><code>N</code> = line follower, <code>O</code> = obstacle mode, <code>M</code> = manual mode,
-              <code>W</code> = follow-me entry.
-            </p><small>High priority path</small>
-          </article>
-          <article class="node note">
-            <h3>Digit speed input</h3>
-            <p>If a character is between <code>'0'</code> and <code>'9'</code>, it is sent to
-              <code>setSpeedValue()</code>.
-            </p><small>Single digit only</small>
-          </article>
-          <article class="node">
-            <h3>Manual command storage</h3>
-            <p>Any other non-mode character is stored as the manual command for manual mode.</p><small>Manual
-              path</small>
-          </article>
-        </div>
-        <div class="grid cols-2" style="margin-top:1rem">
-          <article class="card">
-            <h3>Mode commands</h3>
-            <div class="table-shell">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Command</th>
-                    <th>Meaning</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>N</code></td>
-                    <td>Line follower mode</td>
-                  </tr>
-                  <tr>
-                    <td><code>O</code></td>
-                    <td>Obstacle mode</td>
-                  </tr>
-                  <tr>
-                    <td><code>M</code></td>
-                    <td>Manual mode</td>
-                  </tr>
-                  <tr>
-                    <td><code>W</code></td>
-                    <td>Follow-me placeholder mode</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="svg-shell">
+              <svg viewBox="0 0 1100 1100" role="img" aria-label="Master firmware flowchart">
+                <defs>
+                  <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+                    <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#efe4d4" stroke-width="1" />
+                  </pattern>
+                  <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+                    <path d="M0,0 L14,7 L0,14 z" fill="#9ea8b5" />
+                  </marker>
+                  <marker id="arrowSoft" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+                    <path d="M0,0 L14,7 L0,14 z" fill="#c7ced8" />
+                  </marker>
+                </defs>
+                <rect class="d-bg" x="0" y="0" width="1100" height="960"></rect>
+                <g class="d-term">
+                  <rect x="450" y="24" rx="28" ry="28" width="200" height="62"></rect><text class="d-text" x="550" y="62"
+                    text-anchor="middle">Power On</text>
+                </g>
+                <path class="d-line" d="M550 86 L550 130"></path>
+                <g class="d-proc">
+                  <rect x="405" y="130" rx="18" ry="18" width="290" height="72"></rect><text class="d-text" x="550" y="160"
+                    text-anchor="middle">setup()</text><text class="d-sub" x="550" y="184" text-anchor="middle">Runs one
+                    time after startup or reset</text>
+                </g>
+                <path class="d-line" d="M550 202 L550 238"></path>
+                <g class="d-outline">
+                  <rect x="52" y="238" rx="22" ry="22" width="996" height="220"></rect>
+                </g>
+                <text class="d-label" x="70" y="266">Setup Initialization Stage</text>
+                <g class="d-proc">
+                  <rect x="82" y="300" rx="18" ry="18" width="170" height="86"></rect><text class="d-text" x="167" y="332"
+                    text-anchor="middle">Serial.begin(9600)</text><text class="d-sub" x="167" y="356" text-anchor="middle">Open USB
+                    serial</text><text class="d-sub" x="167" y="376" text-anchor="middle">for
+                    debug logs</text>
+                </g>
+                <g class="d-proc">
+                  <rect x="274" y="300" rx="18" ry="18" width="170" height="86"></rect><text class="d-text" x="359" y="332"
+                    text-anchor="middle">BT.begin(9600)</text><text class="d-sub" x="359" y="356" text-anchor="middle">Start
+                    Bluetooth</text><text class="d-sub" x="359" y="376" text-anchor="middle">on D0 / D1</text>
+                </g>
+                <g class="d-proc">
+                  <rect x="466" y="300" rx="18" ry="18" width="170" height="86"></rect><text class="d-text" x="551" y="332"
+              text-anchor="middle">setupMotors()</text><text class="d-sub" x="551" y="356" text-anchor="middle">Prepare
+              PWM and</text><text class="d-sub" x="551" y="376" text-anchor="middle">direction pins</text>
+          </g>
+          <g class="d-proc">
+            <rect x="658" y="300" rx="18" ry="18" width="170" height="86"></rect><text class="d-text" x="743" y="332"
+              text-anchor="middle">setupLine()</text><text class="d-sub" x="743" y="356" text-anchor="middle">Init
+              line sensor</text><text class="d-sub" x="743" y="376" text-anchor="middle">pins A0 / A1</text>
+          </g>
+          <g class="d-proc" data-target="#pin-reference">
+            <rect x="850" y="300" rx="18" ry="18" width="170" height="86"></rect><text class="d-text" x="935" y="332"
+              text-anchor="middle">setupObs()</text><text class="d-sub" x="935" y="356" text-anchor="middle">Init
+              ultrasonic and</text><text class="d-sub" x="935" y="376" text-anchor="middle">center servo</text>
+          </g>
+          <path class="d-soft" d="M252 343 L274 343"></path>
+          <path class="d-soft" d="M444 343 L466 343"></path>
+          <path class="d-soft" d="M636 343 L658 343"></path>
+          <path class="d-soft" d="M828 343 L850 343"></path>
+          <g class="d-action">
+            <rect x="250" y="412" rx="18" ry="18" width="250" height="70"></rect><text class="d-text" x="375" y="442"
+              text-anchor="middle">currentMode = OBS_MODE</text><text class="d-sub" x="375" y="466"
+              text-anchor="middle">Obstacle mode is the default startup mode</text>
+          </g>
+          <g class="d-note" data-target="#reset-flow">
+            <rect x="600" y="412" rx="18" ry="18" width="250" height="70"></rect><text class="d-text" x="725" y="442"
+              text-anchor="middle">Print [SYS] ready</text><text class="d-sub" x="725" y="466"
+              text-anchor="middle">Startup completed successfully</text>
+          </g>
+          <path class="d-soft" d="M550 386 L550 412"></path>
+          <path class="d-soft" d="M550 412 L375 412"></path>
+          <path class="d-soft" d="M550 412 L725 412"></path>
+          <path class="d-line" d="M550 458 L550 530"></path>
+          <g class="d-proc">
+            <rect x="405" y="530" rx="18" ry="18" width="290" height="72"></rect><text class="d-text" x="550" y="560"
+              text-anchor="middle">loop()</text><text class="d-sub" x="550" y="584" text-anchor="middle">Runs forever
+              after setup completes</text>
+          </g>
+          <path class="d-line" d="M550 602 L550 650"></path>
+          <g class="d-proc" data-target="#command-flow">
+            <rect x="410" y="650" rx="18" ry="18" width="280" height="72"></rect><text class="d-text" x="550" y="680"
+              text-anchor="middle">readCommand()</text><text class="d-sub" x="550" y="704" text-anchor="middle">Read
+              one Bluetooth character if available</text>
+          </g>
+          <path class="d-line" d="M550 722 L550 772"></path>
+          <g class="d-decision">
+            <polygon points="550,772 652,842 550,912 448,842"></polygon><text class="d-text" x="550" y="835"
+              text-anchor="middle">Which mode is</text><text class="d-text" x="550" y="857"
+              text-anchor="middle">currentMode?</text>
+          </g>
+          <path class="d-line" d="M448 842 L232 842 L232 892"></path>
+          <path class="d-line" d="M550 912 L550 944"></path>
+          <path class="d-line" d="M652 842 L868 842 L868 892"></path>
+          <path class="d-line" d="M550 912 L550 944"></path>
+          <g class="d-action">
+            <rect x="96" y="892" rx="18" ry="18" width="270" height="86"></rect><text class="d-text" x="231" y="924"
+              text-anchor="middle">LINE_MODE</text><text class="d-sub" x="231" y="948" text-anchor="middle">Call
+              runLineFollower()</text>
+          </g>
+          <g class="d-action" data-target="#obstacle-flow">
+            <rect x="415" y="892" rx="18" ry="18" width="270" height="86"></rect><text class="d-text" x="550" y="924"
+              text-anchor="middle">OBS_MODE</text><text class="d-sub" x="550" y="948" text-anchor="middle">Call
+              runObstacleAvoidance()</text>
+          </g>
+          <g class="d-action">
+            <rect x="734" y="892" rx="18" ry="18" width="270" height="86"></rect><text class="d-text" x="869" y="924"
+              text-anchor="middle">MANUAL or FOLLOW_ME</text><text class="d-sub" x="869" y="948"
+              text-anchor="middle">runManual() or followMeRSSI()</text><text class="d-sub" x="869" y="968"
+              text-anchor="middle">followMeRSSI is placeholder today</text>
+          </g>
+        </svg>
+      </div>
+      <div class="diagram-note">
+        <ul>
+          <li>This is the real project entry flow today.</li>
+          <li>The board always starts in obstacle mode unless the code is changed.</li>
+          <li>The follow-me function exists in the switch but does not contain working logic yet.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="obstacle-flow" data-title="Obstacle State Machine">
+      <div class="section-head">
+        <div>
+          <h2>Obstacle Avoidance State Machine</h2>
+          <p>This is the most important runtime diagram in the project. It shows the actual state path inside
+            <code>runObstacleAvoidance()</code>.
+            </p>
+            </div><span class="badge">Active obstacle logic</span>
             </div>
-          </article>
-          <article class="card">
-            <h3>Manual motion commands</h3>
-            <div class="table-shell">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Command</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>F</code></td>
-                    <td>Forward</td>
-                  </tr>
-                  <tr>
-                    <td><code>B</code></td>
-                    <td>Backward</td>
-                  </tr>
-                  <tr>
-                    <td><code>L</code></td>
-                    <td>Turn left</td>
-                  </tr>
-                  <tr>
-                    <td><code>R</code></td>
-                    <td>Turn right</td>
-                  </tr>
-                  <tr>
-                    <td><code>S</code></td>
-                    <td>Stop</td>
-                  </tr>
-                  <tr>
-                    <td><code>G</code></td>
-                    <td>Forward left</td>
-                  </tr>
-                  <tr>
-                    <td><code>I</code></td>
-                    <td>Forward right</td>
-                  </tr>
-                  <tr>
-                    <td><code>H</code></td>
-                    <td>Backward left</td>
-                  </tr>
-                  <tr>
-                    <td><code>J</code></td>
-                    <td>Backward right</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="svg-shell">
+              <svg viewBox="0 0 1100 980" role="img" aria-label="Obstacle avoidance state diagram">
+                <defs>
+                  <pattern id="grid2" width="28" height="28" patternUnits="userSpaceOnUse">
+                    <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#efe4d4" stroke-width="1" />
+                  </pattern>
+                  <marker id="arrow2" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+                    <path d="M0,0 L14,7 L0,14 z" fill="#9ea8b5" />
+                  </marker>
+                </defs>
+                <rect x="0" y="0" width="1100" height="980" fill="url(#grid2)"></rect>
+                <line x1="550" y1="88" x2="550" y2="146" class="d-line" style="marker-end:url(#arrow2)"></line>
+                <g class="d-term">
+                  <rect x="408" y="24" rx="28" ry="28" width="284" height="64"></rect><text class="d-text" x="550" y="62"
+                    text-anchor="middle">runObstacleAvoidance()</text>
+                </g>
+                <g class="d-proc">
+                  <rect x="400" y="146" rx="18" ry="18" width="300" height="72"></rect><text class="d-text" x="550" y="176"
+              text-anchor="middle">updateSpeed()</text><text class="d-sub" x="550" y="200" text-anchor="middle">Smoothly
+              move currentSpeed toward targetSpeed</text>
+          </g>
+          <line x1="550" y1="218" x2="550" y2="268" class="d-line" style="marker-end:url(#arrow2)"></line>
+          <g class="d-decision">
+            <polygon points="550,268 662,342 550,416 438,342"></polygon><text class="d-text" x="550" y="334"
+              text-anchor="middle">currentState</text><text class="d-text" x="550" y="356" text-anchor="middle">!=
+              TURN ?</text>
+          </g>
+          <line x1="662" y1="342" x2="868" y2="342" class="d-line" style="marker-end:url(#arrow2)"></line><text
+            class="d-label" x="736" y="328">YES</text>
+          <g class="d-decision">
+            <polygon points="914,256 1024,342 914,428 804,342"></polygon><text class="d-text" x="914" y="334"
+              text-anchor="middle">stopDist</text><text class="d-text" x="914" y="356" text-anchor="middle">&lt;=
+              STOP_DIST ?</text>
+          </g>
+          <line x1="914" y1="428" x2="914" y2="502" class="d-line" style="marker-end:url(#arrow2)"></line><text
+            class="d-label" x="930" y="474">YES</text>
+          <g class="d-warn" data-target="#reset-flow">
+            <rect x="770" y="502" rx="18" ry="18" width="288" height="92"></rect><text class="d-text" x="914" y="536"
+              text-anchor="middle">backward()</text><text class="d-sub" x="914" y="560"
+              text-anchor="middle">currentSpeed = 0</text><text class="d-sub" x="914" y="580"
+              text-anchor="middle">return immediately from function</text>
+          </g>
+          <line x1="804" y1="342" x2="694" y2="342" class="d-soft d-split"></line><text class="d-label" x="738"
+            y="360">NO</text>
+          <g class="d-proc">
+            <rect x="706" y="622" rx="18" ry="18" width="344" height="84"></rect><text class="d-text" x="878" y="654"
+              text-anchor="middle">setMotor(currentSpeed, currentSpeed)</text><text class="d-sub" x="878" y="678"
+              text-anchor="middle">Forward drive continues before switch(currentState)</text>
+          </g>
+          <line x1="914" y1="428" x2="914" y2="622" class="d-soft d-split" style="marker-end:url(#arrow2)"></line>
+          <line x1="550" y1="416" x2="550" y2="486" class="d-line" style="marker-end:url(#arrow2)"></line>
+          <g class="d-outline">
+            <rect x="42" y="486" rx="22" ry="22" width="620" height="432"></rect>
+          </g><text class="d-label" x="60" y="514">switch(currentState)</text>
+          <g class="d-action">
+            <rect x="88" y="560" rx="18" ry="18" width="198" height="90"></rect><text class="d-text" x="187" y="592"
+              text-anchor="middle">MOVE</text><text class="d-sub" x="187" y="616" text-anchor="middle">Check
+              centerDist</text><text class="d-sub" x="187" y="636" text-anchor="middle">against BREAK_DIST</text>
+          </g>
+          <g class="d-decision">
+            <polygon points="376,554 486,626 376,698 266,626"></polygon><text class="d-text" x="376" y="618"
+              text-anchor="middle">Obstacle</text><text class="d-text" x="376" y="640" text-anchor="middle">found
+              ?</text>
+          </g>
+          <g class="d-action">
+            <rect x="536" y="560" rx="18" ry="18" width="92" height="90"></rect><text class="d-text" x="582" y="602"
+              text-anchor="middle">NO</text><text class="d-sub" x="582" y="626"
+              text-anchor="middle">targetSpeed</text><text class="d-sub" x="582" y="646" text-anchor="middle">=
+              180</text>
+          </g>
+          <g class="d-action" data-target="#pin-reference">
+            <rect x="88" y="744" rx="18" ry="18" width="198" height="100"></rect><text class="d-text" x="187" y="776"
+              text-anchor="middle">SEARCH LEFT</text><text class="d-sub" x="187" y="800"
+              text-anchor="middle">turnServoLeft()</text><text class="d-sub" x="187" y="820" text-anchor="middle">read
+              and store leftDist</text>
+          </g>
+          <g class="d-action" data-target="#pin-reference">
+            <rect x="330" y="744" rx="18" ry="18" width="198" height="100"></rect><text class="d-text" x="429" y="776"
+              text-anchor="middle">SEARCH RIGHT</text><text class="d-sub" x="429" y="800"
+              text-anchor="middle">turnServoRight()</text><text class="d-sub" x="429" y="820" text-anchor="middle">read
+              and store rightDist</text>
+          </g>
+          <g class="d-action" data-target="#pin-reference">
+            <rect x="560" y="744" rx="18" ry="18" width="198" height="100"></rect><text class="d-text" x="659" y="776"
+              text-anchor="middle">TURN</text><text class="d-sub" x="659" y="800" text-anchor="middle">Choose forward
+              or backward</text><text class="d-sub" x="659" y="820" text-anchor="middle">diagonal turn and center
+              servo</text>
+          </g>
+          <line x1="286" y1="606" x2="266" y2="606" class="d-soft d-split"></line>
+          <line x1="486" y1="626" x2="536" y2="626" class="d-line" style="marker-end:url(#arrow2)"></line><text
+            class="d-label" x="500" y="612">NO</text>
+          <line x1="376" y1="698" x2="376" y2="744" class="d-line" style="marker-end:url(#arrow2)"></line><text
+            class="d-label" x="392" y="724">YES</text>
+          <line x1="286" y1="794" x2="330" y2="794" class="d-line" style="marker-end:url(#arrow2)"></line>
+          <line x1="528" y1="794" x2="560" y2="794" class="d-line" style="marker-end:url(#arrow2)"></line>
+          <line x1="659" y1="744" x2="659" y2="700" class="d-soft d-split"></line>
+          <line x1="659" y1="700" x2="187" y2="700" class="d-soft d-split"></line>
+          <line x1="187" y1="700" x2="187" y2="650" class="d-soft d-split" style="marker-end:url(#arrow2)"></line>
+          <text class="d-label" x="664" y="720">servo centered -> back to MOVE</text>
+        </svg>
+      </div>
+      <div class="diagram-note">
+        <ul>
+          <li>The state values seen in logs are real: <code>0 = MOVE</code>, <code>1 = SEARCH</code>,
+            <code>2 = TURN</code>.
+            </li>
+            <li><code>ESCAPE</code> and <code>STOP</code> exist in the enum, but they are not active states in the
+              current logic path.</li>
+            <li>The emergency backoff branch runs before the regular state switch when the object is too close.</li>
+            </ul>
             </div>
-          </article>
-          </div>
-      </section>
-      <section class="section" id="pins" data-title="Pin Map">
-        <div class="section-head">
-          <div>
-            <h2>Pin Reference</h2>
-            <p>These values come from <code>pin_map.h</code> and should match the real hardware wiring.</p>
-          </div><span class="badge">Hardware map</span>
-        </div>
-        <div class="table-shell">
-          <table>
-            <thead>
-              <tr>
-                <th>Part</th>
-                <th>Pin</th>
-                <th>Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Bluetooth RX</td>
-                <td><code>D0</code></td>
-                <td>Shares hardware serial path</td>
-              </tr>
-              <tr>
-                <td>Bluetooth TX</td>
-                <td><code>D1</code></td>
-                <td>May interfere with upload and serial monitor</td>
-              </tr>
-              <tr>
-                <td>Left motor PWM</td>
-                <td><code>D5</code></td>
-                <td>Speed control</td>
-              </tr>
-              <tr>
-                <td>Right motor PWM</td>
-                <td><code>D6</code></td>
-                <td>Speed control</td>
-              </tr>
-              <tr>
-                <td>Left motor direction</td>
-                <td><code>D2</code>, <code>D4</code></td>
-                <td>Motor driver inputs</td>
-              </tr>
-              <tr>
-                <td>Right motor direction</td>
-                <td><code>D7</code>, <code>D8</code></td>
-                <td>Motor driver inputs</td>
-              </tr>
-              <tr>
-                <td>Ultrasonic TRIG</td>
-                <td><code>D12</code></td>
-                <td>Pulse output</td>
-              </tr>
-              <tr>
-                <td>Ultrasonic ECHO</td>
-                <td><code>D3</code></td>
-                <td>Echo input</td>
-              </tr>
-              <tr>
-                <td>Servo signal</td>
-                <td><code>D9</code></td>
-                <td>Scan servo control</td>
-              </tr>
-              <tr>
-                <td>Line sensor left</td>
-                <td><code>A0</code></td>
-                <td>Digital read in line mode</td>
-              </tr>
-              <tr>
-                <td>Line sensor right</td>
-                <td><code>A1</code></td>
-                <td>Digital read in line mode</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="callout">
-          <div class="callout-icon">i</div>
-          <div><strong>Upload note:</strong> because Bluetooth is mapped to <code>D0</code> and <code>D1</code>,
-            disconnecting the Bluetooth module before upload may be necessary.</div>
-        </div>
-      </section>
-      <section class="section" id="power" data-title="Power Notes">
-        <div class="section-head">
-          <div>
-            <h2>Power and Reset Notes</h2>
-            <p>The logs showed that resets were caused by hardware power load around the servo and motors, not by normal
-              mode-switch code.</p>
-          </div><span class="badge">Critical lesson</span>
-        </div>
-        <div class="grid cols-2">
-          <article class="card">
-            <h3>What the logs proved</h3>
-            <ul class="check">
-              <li>In <code>logs.txt</code>, <code>[SYS] ready</code> appeared multiple times during runtime.</li>
-              <li>That means the board restarted during operation.</li>
-              <li>In <code>logs2.text</code>, the startup banner appeared only once.</li>
-              <li>So the reset source was power drop or noise, not normal logic flow.</li>
+            </section>
+
+    <section class="section" id="command-flow" data-title="Bluetooth Command Flow">
+      <div class="section-head">
+        <div>
+          <h2>Bluetooth Command Flow</h2>
+          <p>This diagram shows exactly how one Bluetooth character is interpreted by <code>readCommand()</code>.</p>
+        </div><span class="badge">Input parser</span>
+      </div>
+      <div class="svg-shell">
+        <svg viewBox="0 0 1100 880" role="img" aria-label="Bluetooth command flowchart">
+          <defs>
+            <pattern id="grid3" width="28" height="28" patternUnits="userSpaceOnUse">
+              <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#efe4d4" stroke-width="1" />
+            </pattern>
+            <marker id="arrow3" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+              <path d="M0,0 L14,7 L0,14 z" fill="#9ea8b5" />
+            </marker>
+          </defs>
+          <rect x="0" y="0" width="1100" height="880" fill="url(#grid3)"></rect>
+          <g class="d-term">
+            <rect x="432" y="24" rx="28" ry="28" width="236" height="64"></rect><text class="d-text" x="550" y="62"
+              text-anchor="middle">readCommand()</text>
+          </g>
+          <line x1="550" y1="88" x2="550" y2="144" class="d-line" style="marker-end:url(#arrow3)"></line>
+          <g class="d-decision">
+            <polygon points="550,144 668,224 550,304 432,224"></polygon><text class="d-text" x="550" y="216"
+              text-anchor="middle">BT.available() ?</text>
+          </g>
+          <line x1="432" y1="224" x2="176" y2="224" class="d-line" style="marker-end:url(#arrow3)"></line><text
+            class="d-label" x="260" y="206">NO</text>
+          <g class="d-note">
+            <rect x="40" y="182" rx="18" ry="18" width="256" height="84"></rect><text class="d-text" x="170" y="214"
+              text-anchor="middle">Return with no change</text><text class="d-sub" x="170" y="238"
+              text-anchor="middle">Current mode keeps running</text>
+          </g>
+          <line x1="668" y1="224" x2="842" y2="224" class="d-line" style="marker-end:url(#arrow3)"></line><text
+            class="d-label" x="732" y="206">YES</text>
+          <g class="d-proc">
+            <rect x="842" y="182" rx="18" ry="18" width="216" height="84"></rect><text class="d-text" x="950" y="214"
+              text-anchor="middle">command = BT.read()</text><text class="d-sub" x="950" y="238" text-anchor="middle">Read
+              one incoming character</text>
+          </g>
+          <line x1="950" y1="266" x2="950" y2="356" class="d-line" style="marker-end:url(#arrow3)"></line>
+          <g class="d-decision">
+            <polygon points="950,356 1068,438 950,520 832,438"></polygon><text class="d-text" x="950" y="430"
+              text-anchor="middle">Mode command</text><text class="d-text" x="950" y="452" text-anchor="middle">N / O
+              / M / W ?</text>
+          </g>
+          <g class="d-action">
+            <rect x="70" y="610" rx="18" ry="18" width="220" height="96"></rect><text class="d-text" x="180" y="644"
+              text-anchor="middle">N -> setMode(LINE_MODE)</text><text class="d-sub" x="180" y="668"
+              text-anchor="middle">Line follower branch</text>
+          </g>
+          <g class="d-action" data-target="#obstacle-flow">
+            <rect x="322" y="610" rx="18" ry="18" width="220" height="96"></rect><text class="d-text" x="432" y="644"
+              text-anchor="middle">O -> setMode(OBS_MODE)</text><text class="d-sub" x="432" y="668"
+              text-anchor="middle">Obstacle branch</text>
+          </g>
+          <g class="d-action">
+            <rect x="574" y="610" rx="18" ry="18" width="220" height="96"></rect><text class="d-text" x="684" y="644"
+              text-anchor="middle">M -> setMode(MANUAL_MODE)</text><text class="d-sub" x="684" y="668"
+              text-anchor="middle">Manual branch</text>
+          </g>
+          <g class="d-placeholder" data-target="#master-flow">
+            <rect x="826" y="610" rx="18" ry="18" width="220" height="96"></rect><text class="d-text" x="936" y="644"
+              text-anchor="middle">W -> setMode(FOLLOW_ME)</text><text class="d-sub" x="936" y="668"
+              text-anchor="middle">Mode exists but logic is placeholder</text>
+          </g>
+          <line x1="832" y1="438" x2="180" y2="438" class="d-soft"></line>
+          <line x1="180" y1="438" x2="180" y2="610" class="d-soft"></line>
+          <line x1="874" y1="512" x2="432" y2="512" class="d-soft"></line>
+          <line x1="432" y1="512" x2="432" y2="610" class="d-soft"></line>
+          <line x1="950" y1="520" x2="684" y2="520" class="d-soft"></line>
+          <line x1="684" y1="520" x2="684" y2="610" class="d-soft"></line>
+          <line x1="1026" y1="512" x2="936" y2="512" class="d-soft"></line>
+          <line x1="936" y1="512" x2="936" y2="610" class="d-soft"></line>
+          <line x1="950" y1="520" x2="950" y2="574" class="d-line" style="marker-end:url(#arrow3)"></line><text
+            class="d-label" x="966" y="552">NOT A MODE COMMAND</text>
+          <g class="d-decision">
+            <polygon points="950,574 1062,648 950,722 838,648"></polygon><text class="d-text" x="950" y="640"
+              text-anchor="middle">Digit between</text><text class="d-text" x="950" y="662" text-anchor="middle">'0'
+              and '9' ?</text>
+          </g>
+          <line x1="838" y1="648" x2="608" y2="648" class="d-line" style="marker-end:url(#arrow3)"></line><text
+            class="d-label" x="706" y="630">YES</text>
+          <g class="d-note">
+            <rect x="410" y="760" rx="18" ry="18" width="270" height="90"></rect><text class="d-text" x="545" y="792"
+              text-anchor="middle">setSpeedValue(command)</text><text class="d-sub" x="545" y="816"
+              text-anchor="middle">Current code uses single-digit input here</text>
+          </g>
+          <line x1="608" y1="648" x2="545" y2="648" class="d-soft"></line>
+          <line x1="545" y1="648" x2="545" y2="760" class="d-soft"></line>
+          <line x1="1062" y1="648" x2="1086" y2="648" class="d-line" style="marker-end:url(#arrow3)"></line><text
+            class="d-label" x="1010" y="630">NO</text>
+          <g class="d-proc">
+            <rect x="800" y="760" rx="18" ry="18" width="260" height="90"></rect><text class="d-text" x="930" y="792"
+              text-anchor="middle">handleManualCommand(command)</text><text class="d-sub" x="930" y="816"
+              text-anchor="middle">Store the manual direction command</text>
+          </g>
+          <line x1="930" y1="722" x2="930" y2="760" class="d-soft"></line>
+        </svg>
+      </div>
+      <div class="diagram-note">
+        <ul>
+          <li>The current live sketch reacts to single characters only.</li>
+          <li>Manual movement happens after sending <code>M</code>, then sending motion letters like <code>F</code>,
+            <code>B</code>, <code>L</code>, or <code>R</code>.
+            </li>
+            <li>Follow-me can be selected by mode, but its behavior is still unfinished.</li>
             </ul>
-          </article>
-          <article class="card">
-            <h3>Recommended wiring practice</h3>
-            <ul class="check">
-              <li>Do not power the servo from the Arduino 5V pin during full operation.</li>
-              <li>Do not power motors from the Arduino board.</li>
-              <li>Use an external motor supply through the motor driver.</li>
-              <li>Use a stable 5V source for the servo.</li>
-              <li>Keep a common ground across Arduino, driver, servo, Bluetooth, and sensors.</li>
-              <li>Add a <code>470uF</code> to <code>1000uF</code> capacitor near the servo supply.</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-      <section class="section" id="files" data-title="File Guide">
-        <div class="section-head">
-          <div>
-            <h2>File Guide</h2>
-            <p>Use this as your reading roadmap if you want to understand the project step by step.</p>
-          </div><span class="badge">Where to read next</span>
-        </div>
-        <div class="grid cols-3">
-          <article class="card">
-            <h3>mode_switching.ino</h3>
-            <p>Main sketch with startup, command reading, and mode dispatch.</p>
-          </article>
-          <article class="card">
-            <h3>pin_map.h</h3>
-            <p>Single place for hardware pins.</p>
-          </article>
-          <article class="card">
-            <h3>motor_functions.h</h3>
-            <p>Low-level movement helpers.</p>
-          </article>
-          <article class="card">
-            <h3>manual.h</h3>
-            <p>Stores and executes manual commands.</p>
-          </article>
-          <article class="card">
-            <h3>line_follower.h</h3>
-            <p>Simple line sensor decisions.</p>
-          </article>
-          <article class="card">
-            <h3>ultrasonic.h</h3>
-            <p>Distance measurement and threshold checks.</p>
-          </article>
-          <article class="card">
-            <h3>servo.h</h3>
-            <p>Step-based scan servo movement.</p>
-          </article>
-          <article class="card">
-            <h3>obstacle_avoidance_v2.h</h3>
-            <p>Active obstacle state machine.</p>
-          </article>
-          <article class="card">
-            <h3>follow_me.h</h3>
-            <p>Placeholder only for now.</p>
-          </article>
-        </div>
-        <div class="footer-note">Recommended reading order: <code>mode_switching.ino</code> -> <code>pin_map.h</code> ->
-          <code>motor_functions.h</code> -> <code>manual.h</code> -> <code>line_follower.h</code> ->
-          <code>ultrasonic.h</code> -> <code>servo.h</code> -> <code>obstacle_avoidance_v2.h</code>.
-        </div>
-        </section>
-        </main>
-  </div>
+            </div>
+            </section>
+
+    <section class="section" id="reset-flow" data-title="Reset Diagnosis Flow">
+      <div class="section-head">
+        <div>
+          <h2>Reset Diagnosis Flow</h2>
+          <p>This flowchart turns the debug lesson from the logs into a practical troubleshooting path.</p>
+        </div><span class="badge">Hardware diagnosis</span>
+      </div>
+      <div class="svg-shell">
+        <svg viewBox="0 0 1100 760" role="img" aria-label="Reset diagnosis flowchart">
+          <defs>
+            <pattern id="grid4" width="28" height="28" patternUnits="userSpaceOnUse">
+              <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#efe4d4" stroke-width="1" />
+            </pattern>
+            <marker id="arrow4" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+              <path d="M0,0 L14,7 L0,14 z" fill="#9ea8b5" />
+            </marker>
+          </defs>
+          <rect x="0" y="0" width="1100" height="760" fill="url(#grid4)"></rect>
+          <g class="d-term">
+            <rect x="402" y="28" rx="28" ry="28" width="296" height="64"></rect><text class="d-text" x="550" y="66"
+              text-anchor="middle">Check the serial logs</text>
+          </g>
+          <line x1="550" y1="92" x2="550" y2="156" class="d-line" style="marker-end:url(#arrow4)"></line>
+          <g class="d-decision">
+            <polygon points="550,156 676,246 550,336 424,246"></polygon><text class="d-text" x="550" y="238"
+              text-anchor="middle">Does [SYS] ready</text><text class="d-text" x="550" y="260" text-anchor="middle">appear
+              again mid-run?</text>
+          </g>
+          <line x1="424" y1="246" x2="176" y2="246" class="d-line" style="marker-end:url(#arrow4)"></line><text
+            class="d-label" x="260" y="226">NO</text>
+          <g class="d-note">
+            <rect x="40" y="198" rx="18" ry="18" width="260" height="96"></rect><text class="d-text" x="170" y="232"
+              text-anchor="middle">No reboot visible</text><text class="d-sub" x="170" y="256" text-anchor="middle">Program
+              is still in one continuous run</text>
+          </g>
+          <line x1="676" y1="246" x2="918" y2="246" class="d-line" style="marker-end:url(#arrow4)"></line><text
+            class="d-label" x="760" y="226">YES</text>
+          <g class="d-warn">
+            <rect x="782" y="198" rx="18" ry="18" width="278" height="96"></rect><text class="d-text" x="921" y="232"
+              text-anchor="middle">MCU reset happened</text><text class="d-sub" x="921" y="256" text-anchor="middle">Startup
+              banner only repeats after reboot</text>
+          </g>
+          <line x1="921" y1="294" x2="921" y2="384" class="d-line" style="marker-end:url(#arrow4)"></line>
+          <g class="d-decision">
+            <polygon points="921,384 1038,470 921,556 804,470"></polygon><text class="d-text" x="921" y="460"
+              text-anchor="middle">Does it happen only</text><text class="d-text" x="921" y="482" text-anchor="middle">when
+              servo or motors</text><text class="d-text" x="921" y="504" text-anchor="middle">are powered?</text>
+          </g>
+          <line x1="804" y1="470" x2="560" y2="470" class="d-line" style="marker-end:url(#arrow4)"></line><text
+            class="d-label" x="648" y="450">YES</text>
+          <g class="d-action" data-target="#pin-reference">
+            <rect x="334" y="602" rx="18" ry="18" width="452" height="110"></rect><text class="d-text" x="560" y="638"
+              text-anchor="middle">Power drop or electrical noise is the likely cause</text><text class="d-sub" x="560"
+              y="664" text-anchor="middle">Use separate servo supply, proper motor supply, common
+              ground,</text><text class="d-sub" x="560" y="686" text-anchor="middle">and add a 470uF to 1000uF
+              capacitor near the servo line</text>
+          </g>
+          <line x1="560" y1="470" x2="560" y2="602" class="d-soft" style="marker-end:url(#arrow4)"></line>
+          <line x1="1038" y1="470" x2="1080" y2="470" class="d-line" style="marker-end:url(#arrow4)"></line><text
+            class="d-label" x="998" y="450">NO</text>
+          <g class="d-note">
+            <rect x="834" y="602" rx="18" ry="18" width="236" height="110"></rect><text class="d-text" x="952" y="638"
+              text-anchor="middle">Check other causes</text><text class="d-sub" x="952" y="664"
+              text-anchor="middle">wiring, serial conflicts,</text><text class="d-sub" x="952" y="686"
+              text-anchor="middle">supply quality, or extra debug stress</text>
+          </g>
+        </svg>
+      </div>
+      <div class="diagram-note">
+        <ul>
+          <li><code>logs.txt</code> showed repeated startup banners, so a reset definitely happened.</li>
+          <li><code>logs2.text</code> showed only one startup banner when the heavy power load was removed.</li>
+          <li>That result strongly points to power distribution and electrical load, not ordinary flow-control logic.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="pin-reference" data-title="Pin Reference">
+      <div class="section-head">
+        <div>
+          <h2>Pin Reference</h2>
+          <p>Use this quick hardware map beside the diagrams when wiring or debugging the real robot.</p>
+        </div><span class="badge">Quick hardware map</span>
+      </div>
+      <div class="grid cols-4">
+        <article class="card">
+          <h3>Bluetooth</h3>
+          <p><code>D0</code> and <code>D1</code></p>
+          <div class="mini-row"><span class="mini warn">Shares serial path</span></div>
+        </article>
+        <article class="card">
+          <h3>Motors</h3>
+          <p><code>D5</code>, <code>D6</code>, <code>D2</code>, <code>D4</code>, <code>D7</code>, <code>D8</code></p>
+          <div class="mini-row"><span class="mini info">PWM + direction</span></div>
+        </article>
+        <article class="card">
+          <h3>Ultrasonic</h3>
+          <p><code>D12</code> TRIG and <code>D3</code> ECHO</p>
+          <div class="mini-row"><span class="mini ok">Active obstacle sensor</span></div>
+        </article>
+        <article class="card">
+          <h3>Servo and line sensors</h3>
+          <p><code>D9</code> servo, <code>A0</code> and <code>A1</code> line sensors</p>
+          <div class="mini-row"><span class="mini info">Scan + line read</span></div>
+        </article>
+      </div>
+      <div class="footer-note">This page is now fully centered on the diagrams. The sidebar has been removed, the
+        section navigation stays available at the top, and every flowchart can now be zoomed, panned, and inspected
+        directly inside the page.</div>
+    </section>
+  </main>
   <button id="scrolltop" type="button" aria-label="Scroll to top"><svg width="18" height="18" viewBox="0 0 24 24"
       fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 19V5"></path>
       <path d="m5 12 7-7 7 7"></path>
     </svg></button>
   <script>
-    (function () { const b = document.body, s = document.getElementById("sidebar"), o = document.getElementById("overlay"), h = document.getElementById("hamburger"), t = document.getElementById("topbarTitle"), p = document.getElementById("progress"), up = document.getElementById("scrolltop"), mq = window.matchMedia("(max-width: 780px)"), links = [...document.querySelectorAll(".nav-link")], items = links.map(l => { const x = document.querySelector(l.getAttribute("href")); return x ? { l, x } : null }).filter(Boolean); function drawer(open) { const show = !!open && mq.matches; s.classList.toggle("open", show); o.classList.toggle("show", show); b.classList.toggle("drawer-open", show); h.setAttribute("aria-expanded", String(show)) } h.addEventListener("click", () => drawer(!s.classList.contains("open"))); o.addEventListener("click", () => drawer(false)); document.addEventListener("keydown", e => { if (e.key === "Escape") drawer(false) }); mq.addEventListener("change", e => { if (!e.matches) drawer(false) }); links.forEach(l => l.addEventListener("click", () => { if (mq.matches) drawer(false) })); function scrollUI() { const top = window.scrollY || window.pageYOffset, max = document.documentElement.scrollHeight - window.innerHeight, val = max > 0 ? top / max * 100 : 0; p.style.width = val + "%"; up.classList.toggle("show", top > 320) } up.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" })); const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; items.forEach(i => { const a = i.x === e.target; i.l.classList.toggle("active", a); if (a) t.textContent = e.target.dataset.title || e.target.id }) }), { rootMargin: "-32% 0px -52% 0px", threshold: .1 }); items.forEach(i => io.observe(i.x)); scrollUI(); window.addEventListener("scroll", scrollUI, { passive: true }) })();
+    (function () {
+      const progress = document.getElementById("progress");
+      const scrollTopButton = document.getElementById("scrolltop");
+      const activeSection = document.getElementById("activeSection");
+      const navLinks = [...document.querySelectorAll(".nav-chip")];
+      const sections = navLinks.map(link => {
+        const target = document.querySelector(link.getAttribute("href"));
+        return target ? { link, target } : null;
+      }).filter(Boolean);
+
+      function updateScrollUI() {
+        const top = window.scrollY || window.pageYOffset;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const value = max > 0 ? top / max * 100 : 0;
+        progress.style.width = value + "%";
+        scrollTopButton.classList.toggle("show", top > 320);
+      }
+
+      scrollTopButton.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      const sectionObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          sections.forEach(item => {
+            const isActive = item.target === entry.target;
+            item.link.classList.toggle("active", isActive);
+
+            if (isActive && activeSection) {
+              activeSection.textContent = entry.target.dataset.title || item.link.textContent.trim();
+            }
+          });
+        });
+      }, { rootMargin: "-34% 0px -48% 0px", threshold: 0.16 });
+
+      sections.forEach(item => sectionObserver.observe(item.target));
+      window.addEventListener("scroll", updateScrollUI, { passive: true });
+      updateScrollUI();
+
+      function extractNodeCopy(node) {
+        const texts = [...node.querySelectorAll("text")]
+          .map(text => text.textContent.replace(/\s+/g, " ").trim())
+          .filter(Boolean);
+
+        return {
+          title: texts[0] || "Flow node",
+          description: texts.slice(1).join(" ") || "Part of the firmware flow shown in this diagram."
+        };
+      }
+
+      function flashSection(target) {
+        target.classList.remove("section-flash");
+        void target.offsetWidth;
+        target.classList.add("section-flash");
+        window.setTimeout(() => target.classList.remove("section-flash"), 1550);
+      }
+
+      function buildGuideMeta(sectionTitle, entries) {
+        const linkMarkup = entries.length
+          ? `<div class="detail-links">${entries.map(entry => `
+              <a class="detail-link" href="${entry.targetSelector}" data-jump="${entry.targetSelector}">
+                <strong>${entry.title}</strong>
+                <span>Opens ${entry.targetTitle}</span>
+              </a>
+            `).join("")}</div>`
+          : `<div class="detail-hint"><strong>Guide:</strong> This diagram currently has no linked jump blocks.</div>`;
+
+        return `
+          <div class="detail-hint"><strong>Jump blocks:</strong> Only the highlighted complex blocks in <code>${sectionTitle}</code> respond to hover and click.</div>
+          <div class="detail-hint"><strong>Controls:</strong> Drag to pan, use the wheel or toolbar to zoom, and click a linked block to open its related section.</div>
+          ${linkMarkup}
+        `;
+      }
+
+      function enhanceDiagram(shell) {
+        const section = shell.closest(".section");
+        const sectionTitle = section?.querySelector("h2")?.textContent.trim() || "Interactive diagram";
+        const svg = shell.querySelector("svg");
+
+        if (!svg || !svg.viewBox || !svg.viewBox.baseVal.width) {
+          return;
+        }
+
+        const width = svg.viewBox.baseVal.width;
+        const height = svg.viewBox.baseVal.height;
+        svg.style.width = width + "px";
+        svg.style.height = height + "px";
+
+        const toolbar = document.createElement("div");
+        toolbar.className = "diagram-toolbar";
+        toolbar.innerHTML = `
+          <div>
+            <p class="diagram-kicker">Interactive diagram</p>
+            <h3>${sectionTitle}</h3>
+          </div>
+          <div class="diagram-tools">
+            <button type="button" class="diagram-btn" data-action="zoom-out" aria-label="Zoom out">-</button>
+            <button type="button" class="diagram-btn" data-action="zoom-in" aria-label="Zoom in">+</button>
+            <button type="button" class="diagram-btn diagram-btn--wide" data-action="reset" aria-label="Reset diagram view">Reset</button>
+          </div>
+        `;
+
+        const stage = document.createElement("div");
+        stage.className = "diagram-stage";
+
+        const viewport = document.createElement("div");
+        viewport.className = "diagram-viewport";
+        viewport.setAttribute("tabindex", "0");
+        viewport.setAttribute("aria-label", sectionTitle + " interactive flow diagram");
+
+        const canvas = document.createElement("div");
+        canvas.className = "diagram-canvas";
+        canvas.appendChild(svg);
+
+        const status = document.createElement("div");
+        status.className = "diagram-status";
+        status.textContent = "Drag to pan | Wheel to zoom";
+
+        viewport.append(canvas, status);
+
+        const detail = document.createElement("aside");
+        detail.className = "diagram-detail";
+        detail.innerHTML = `
+          <span class="detail-kicker">Jump guide</span>
+          <h3 class="detail-title">Linked blocks in this diagram</h3>
+          <span class="detail-type">Section routing</span>
+          <p class="detail-desc">Only the marked complex blocks are interactive. Click one and the page will jump to the related detailed section.</p>
+          <div class="detail-meta"></div>
+        `;
+
+        const detailTitle = detail.querySelector(".detail-title");
+        const detailType = detail.querySelector(".detail-type");
+        const detailDescription = detail.querySelector(".detail-desc");
+        const detailMeta = detail.querySelector(".detail-meta");
+
+        shell.replaceChildren(toolbar, stage);
+        stage.append(viewport, detail);
+
+        const state = {
+          scale: 1,
+          x: 0,
+          y: 0
+        };
+
+        const minScale = 0.45;
+        const maxScale = 2.2;
+        const padding = 24;
+        let isDragging = false;
+        let pointerId = null;
+        let lastX = 0;
+        let lastY = 0;
+        let travel = 0;
+        let suppressClickUntil = 0;
+
+        function clampState() {
+          const contentWidth = width * state.scale;
+          const contentHeight = height * state.scale;
+          const viewportWidth = viewport.clientWidth;
+          const viewportHeight = viewport.clientHeight;
+
+          const centeredX = (viewportWidth - contentWidth) / 2;
+          const centeredY = (viewportHeight - contentHeight) / 2;
+
+          const minX = contentWidth + padding * 2 > viewportWidth ? viewportWidth - contentWidth - padding : centeredX;
+          const maxX = contentWidth + padding * 2 > viewportWidth ? padding : centeredX;
+          const minY = contentHeight + padding * 2 > viewportHeight ? viewportHeight - contentHeight - padding : centeredY;
+          const maxY = contentHeight + padding * 2 > viewportHeight ? padding : centeredY;
+
+          state.x = Math.min(maxX, Math.max(minX, state.x));
+          state.y = Math.min(maxY, Math.max(minY, state.y));
+        }
+
+        function applyTransform() {
+          clampState();
+          canvas.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
+          status.textContent = `${Math.round(state.scale * 100)}% zoom | drag to pan`;
+        }
+
+        function resetView() {
+          const fitScale = Math.min(
+            (viewport.clientWidth - padding * 2) / width,
+            (viewport.clientHeight - padding * 2) / height,
+            1
+          );
+
+          state.scale = Math.max(minScale, fitScale);
+          state.x = (viewport.clientWidth - width * state.scale) / 2;
+          state.y = (viewport.clientHeight - height * state.scale) / 2;
+
+          applyTransform();
+        }
+
+        function zoomTo(nextScale, clientX, clientY) {
+          const previousScale = state.scale;
+          const scale = Math.min(maxScale, Math.max(minScale, nextScale));
+
+          if (scale === previousScale) {
+            return;
+          }
+
+          const rect = viewport.getBoundingClientRect();
+          const pointX = clientX - rect.left;
+          const pointY = clientY - rect.top;
+          const worldX = (pointX - state.x) / previousScale;
+          const worldY = (pointY - state.y) / previousScale;
+
+          state.scale = scale;
+          state.x = pointX - worldX * scale;
+          state.y = pointY - worldY * scale;
+          applyTransform();
+        }
+
+        const linkEntries = [...svg.querySelectorAll("g[data-target]")].map(node => {
+          const copy = extractNodeCopy(node);
+          const targetSelector = node.dataset.target;
+          const target = targetSelector ? document.querySelector(targetSelector) : null;
+          const targetTitle = target?.querySelector("h2")?.textContent.trim()
+            || target?.dataset.title
+            || targetSelector
+            || "related section";
+
+          return { node, copy, targetSelector, target, targetTitle };
+        });
+
+        detailMeta.innerHTML = buildGuideMeta(sectionTitle, linkEntries.map(entry => ({
+          title: entry.copy.title,
+          targetSelector: entry.targetSelector,
+          targetTitle: entry.targetTitle
+        })));
+
+        function jumpTo(entry) {
+          if (!entry.target || !entry.targetSelector) {
+            return;
+          }
+
+          detailTitle.textContent = entry.copy.title;
+          detailType.textContent = "Jump block";
+          detailDescription.textContent = `Opening ${entry.targetTitle}.`;
+
+          entry.node.classList.add("is-jumping");
+          window.setTimeout(() => entry.node.classList.remove("is-jumping"), 700);
+
+          entry.target.scrollIntoView({ behavior: "smooth", block: "start" });
+          flashSection(entry.target);
+        }
+
+        linkEntries.forEach(entry => {
+          const { node, copy, targetTitle } = entry;
+
+          node.classList.add("flow-link");
+          node.setAttribute("tabindex", "0");
+          node.setAttribute("role", "link");
+          node.setAttribute("aria-label", `${copy.title}. Opens ${targetTitle}.`);
+
+          function activateLink() {
+            if (Date.now() < suppressClickUntil) {
+              return;
+            }
+
+            jumpTo(entry);
+          }
+
+          node.addEventListener("click", activateLink);
+          node.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              activateLink();
+            }
+          });
+        });
+
+        detailMeta.querySelectorAll("[data-jump]").forEach(link => {
+          link.addEventListener("click", event => {
+            event.preventDefault();
+            const entry = linkEntries.find(item => item.targetSelector === link.dataset.jump && item.copy.title === link.querySelector("strong")?.textContent);
+            if (entry) {
+              jumpTo(entry);
+            }
+          });
+        });
+
+        toolbar.querySelector('[data-action="zoom-in"]').addEventListener("click", () => {
+          const rect = viewport.getBoundingClientRect();
+          zoomTo(state.scale * 1.15, rect.left + rect.width / 2, rect.top + rect.height / 2);
+        });
+
+        toolbar.querySelector('[data-action="zoom-out"]').addEventListener("click", () => {
+          const rect = viewport.getBoundingClientRect();
+          zoomTo(state.scale / 1.15, rect.left + rect.width / 2, rect.top + rect.height / 2);
+        });
+
+        toolbar.querySelector('[data-action="reset"]').addEventListener("click", () => {
+          resetView();
+        });
+
+        viewport.addEventListener("wheel", event => {
+          event.preventDefault();
+          const factor = event.deltaY < 0 ? 1.08 : 0.92;
+          zoomTo(state.scale * factor, event.clientX, event.clientY);
+        }, { passive: false });
+
+        viewport.addEventListener("dblclick", () => {
+          resetView();
+        });
+
+        viewport.addEventListener("pointerdown", event => {
+          if (event.button !== 0) {
+            return;
+          }
+
+          isDragging = true;
+          pointerId = event.pointerId;
+          lastX = event.clientX;
+          lastY = event.clientY;
+          travel = 0;
+          viewport.classList.add("is-dragging");
+          viewport.setPointerCapture(pointerId);
+        });
+
+        viewport.addEventListener("pointermove", event => {
+          if (!isDragging) {
+            return;
+          }
+
+          const dx = event.clientX - lastX;
+          const dy = event.clientY - lastY;
+          lastX = event.clientX;
+          lastY = event.clientY;
+          travel += Math.abs(dx) + Math.abs(dy);
+          state.x += dx;
+          state.y += dy;
+          applyTransform();
+        });
+
+        function stopDragging() {
+          if (!isDragging) {
+            return;
+          }
+
+          if (travel > 8) {
+            suppressClickUntil = Date.now() + 120;
+          }
+
+          isDragging = false;
+          if (pointerId !== null) {
+            viewport.releasePointerCapture(pointerId);
+          }
+
+          viewport.classList.remove("is-dragging");
+          pointerId = null;
+          travel = 0;
+        }
+
+        viewport.addEventListener("pointerup", stopDragging);
+        viewport.addEventListener("pointercancel", stopDragging);
+        viewport.addEventListener("pointerleave", stopDragging);
+
+        requestAnimationFrame(() => resetView());
+        window.addEventListener("resize", () => resetView());
+      }
+
+      document.querySelectorAll(".svg-shell").forEach(enhanceDiagram);
+    })();
   </script>
-  </body>
+</body>
 
 </html>
