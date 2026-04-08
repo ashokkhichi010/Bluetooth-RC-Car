@@ -1,10 +1,28 @@
 #ifndef MANUAL_H
 #define MANUAL_H
 
-char manualCmd = "";
+#include "motor_functions.h"
+
+char manualCmd = 'S';
 
 void handleManualCommand(char cmd) {
-  manualCmd = cmd;
+  switch (cmd) {
+    case 'F':
+    case 'B':
+    case 'L':
+    case 'R':
+    case 'S':
+    case 'G':
+    case 'I':
+    case 'H':
+    case 'J':
+      manualCmd = cmd;
+      break;
+  }
+}
+
+void resetManualCommand() {
+  manualCmd = 'S';
 }
 
 void runManual() {
@@ -19,6 +37,7 @@ void runManual() {
     case 'I': forwardRight(); break;
     case 'H': backwardLeft(); break;
     case 'J': backwardRight(); break;
+    // default: stopCar(); break;
   }
 }
 
