@@ -8,7 +8,7 @@
 #define ECHO ULTRASONIC_ECHO_PIN
 
 #define MAX_DISTANCE 300
-#define NUM_SAMPLES 5
+#define ULTRASONIC_TIMEOUT_US 30000
 
 void setupUltrasonic() {
   pinMode(TRIG, OUTPUT);
@@ -26,7 +26,7 @@ float getDistance() {
   delayMicroseconds(10);
   digitalWrite(TRIG, LOW);
 
-  long duration = pulseIn(ECHO, HIGH, 30000);
+  long duration = pulseIn(ECHO, HIGH, ULTRASONIC_TIMEOUT_US);
 
   if (duration == 0) return MAX_DISTANCE;
 

@@ -20,13 +20,17 @@ void setupServoScanner() {
 }
 
 void turnServoAt(int direction) {
+  direction = constrain(direction, RIGHT_SCAN_ANGLE, LEFT_SCAN_ANGLE);
+
   if (servoCurrentAngle < direction) {
-    servoCurrentAngle = servoCurrentAngle + 2;
+    servoCurrentAngle = min(servoCurrentAngle + 2, direction);
+  } else if (servoCurrentAngle > direction) {
+    servoCurrentAngle = max(servoCurrentAngle - 2, direction);
   } else {
-    servoCurrentAngle = servoCurrentAngle - 2;
+    return;
   }
-  Serial.print(" servoCurrentAngle ");
-  Serial.print(servoCurrentAngle);
+//  Serial.print(" servoCurrentAngle ");
+//  Serial.print(servoCurrentAngle);
   scanServo.write(servoCurrentAngle);
 }
 
@@ -64,6 +68,11 @@ void turnServoRight() {
 
 void turnServoCenter() {
   turnServoAt(CENTER_ANGLE);
+}
+
+void centerServoNow() {
+  servoCurrentAngle = CENTER_ANGLE;
+  scanServo.write(CENTER_ANGLE);
 }
 
 #endif

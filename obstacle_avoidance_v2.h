@@ -45,6 +45,26 @@ unsigned long escapeStartTime = 0;
 void setupObs() {
   setupUltrasonic();
   setupServoScanner();
+  currentState = MOVE;
+  currentSearchState = SCAN_LEFT;
+  currentSpeed = 0;
+  targetSpeed = 0;
+  obstacleCount = 0;
+}
+
+void resetObstacleAvoidanceState() {
+  currentState = MOVE;
+  currentSearchState = SCAN_LEFT;
+  currentSpeed = 0;
+  targetSpeed = 0;
+  obstacleCount = 0;
+  centerDist = 0;
+  stopDist = 0;
+  leftDist = 0;
+  rightDist = 0;
+  lastSpeedUpdate = millis();
+  centerServoNow();
+  stopCar();
 }
 
 // -------- Smooth Speed --------
@@ -61,6 +81,7 @@ void runObstacleAvoidance() {
   updateSpeed();
   if (currentState != TURN) {
     if (checkObstacleFound(stopDist, STOP_DIST)) {
+      targetSpeed = 0;
       backward();
       currentSpeed = 0;
       return;
