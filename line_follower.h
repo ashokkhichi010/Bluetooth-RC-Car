@@ -2,6 +2,7 @@
 #define LINE_H
 
 #include "pin_map.h"
+#include "motor_functions.h"
 
 #define LINE_LEFT LINE_LEFT_PIN
 #define LINE_RIGHT LINE_RIGHT_PIN

@@ -8,7 +8,7 @@
 
 
 // -------- BLUETOOTH --------
-SoftwareSerial BT(BT_RX_PIN, BT_TX_PIN); // RX, TX
+SoftwareSerial softBT(BT_RX_PIN, BT_TX_PIN);  // RX, TX
 
 // -------- MODE --------
 enum Mode {
@@ -21,46 +21,90 @@ enum Mode {
 Mode currentMode = MANUAL_MODE;
 
 // -------- SERIAL BUFFER --------
-char command = "";
+char command = '\0';
+
+bool usesHardwareSerialForBluetooth() {
+  return BT_RX_PIN == 0 && BT_TX_PIN == 1;
+}
+
+void beginBluetooth(unsigned long baudRate) {
+  if (usesHardwareSerialForBluetooth()) {
+    Serial.begin(baudRate);
+  } else {
+    softBT.begin(baudRate);
+  }
+}
+
+int bluetoothAvailable() {
+  return usesHardwareSerialForBluetooth() ? Serial.available() : softBT.available();
+}
+
+int bluetoothRead() {
+  return usesHardwareSerialForBluetooth() ? Serial.read() : softBT.read();
+}
+
+void setMode(Mode newMode) {
+  if (currentMode == newMode) {
+    return;
+  }
+
+  stopCar();
+
+  if (newMode == OBS_MODE) {
+    resetObstacleAvoidanceState();
+  } else if (newMode == MANUAL_MODE) {
+    resetManualCommand();
+  }
+
+  currentMode = newMode;
+}
 
 // -------- SETUP --------
 void setup() {
-  Serial.begin(9600);
-  BT.begin(9600);
+  //  Serial.begin(9600);
+  beginBluetooth(9600);
 
   setupMotors();
   setupLine();
   setupObs();
+  resetManualCommand();
   // setupFollowMe();
   Serial.println("[SYS] ready");
 }
 
 // -------- READ COMMAND --------
 void readCommand() {
-  if (BT.available()) {
-    command = BT.read();
+  while (bluetoothAvailable()) {
+    command = (char)bluetoothRead();
     Serial.print(" command ");
     Serial.println(command);
 
+    if (command == '\r' || command == '\n') {
+      continue;
+    }
+
+    //  Serial.print(" command ");
+    //  Serial.println(command);
+
     switch (command) {
-    case 'N':
-      currentMode = LINE_MODE;
-      break;
-    case 'O':
-      currentMode = OBS_MODE;
-      break;
-    case 'M':
-      currentMode = MANUAL_MODE;
-      break;
-    case 'W':
-      currentMode = FOLLOW_ME;
-      break;
-    default:
-      if (command >= 48 && command <= 57) {
-        setSpeedValue(command);
-      } else {
-        handleManualCommand(command);
-      }
+      case 'N':
+        setMode(LINE_MODE);
+        break;
+      case 'O':
+        setMode(OBS_MODE);
+        break;
+      case 'M':
+        setMode(MANUAL_MODE);
+        break;
+      case 'W':
+        setMode(FOLLOW_ME);
+        break;
+      default:
+        if (command >= '0' && command <= '9') {
+          setSpeedValue(command - '0');
+        } else {
+          handleManualCommand(command);
+        }
     }
   }
 }
@@ -68,20 +112,20 @@ void readCommand() {
 void loop() {
   readCommand();
   switch (currentMode) {
-  case LINE_MODE:
-    runLineFollower();
-    break;
+    case LINE_MODE:
+      runLineFollower();
+      break;
 
-  case OBS_MODE:
-    runObstacleAvoidance();
-    break;
+    case OBS_MODE:
+      runObstacleAvoidance();
+      break;
 
-  case MANUAL_MODE:
-    runManual();
-    break;
+    case MANUAL_MODE:
+      runManual();
+      break;
 
-  case FOLLOW_ME:
-    followMeRSSI();
-    break;
+    case FOLLOW_ME:
+      followMeRSSI();
+      break;
   }
 }
