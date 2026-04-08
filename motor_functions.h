@@ -13,10 +13,12 @@
 #define IN3 MOTOR_RIGHT_IN1_PIN
 #define IN4 MOTOR_RIGHT_IN2_PIN
 
+void stopCar();
+
 int speedVal = 200;
 
 void setSpeedValue(int newSpeed) {
-  speedVal = newSpeed * (newSpeed < 10 ? 28 : 1);   //  we will send only 0 to 9 that's why we are multiplying by 28
+  speedVal = constrain(newSpeed * (newSpeed < 10 ? 28 : 1), 0, 255);   //  we will send only 0 to 9 that's why we are multiplying by 28
 }
 
 void setupMotors() {
@@ -26,6 +28,7 @@ void setupMotors() {
   pinMode(IN4, OUTPUT);
   pinMode(ENA, OUTPUT);
   pinMode(ENB, OUTPUT);
+  stopCar();
 }
 
 void moveForward(int spd) {
@@ -161,8 +164,8 @@ void backwardRight() {
 
 // -------- Motor Control --------
 void setMotor(int left, int right) {
-  analogWrite(ENA, left);
-  analogWrite(ENB, right);
+  analogWrite(ENA, constrain(left, 0, 255));
+  analogWrite(ENB, constrain(right, 0, 255));
 
   digitalWrite(IN1, HIGH);
   digitalWrite(IN2, LOW);
