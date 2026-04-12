@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "command.h"
+#include "logs.h"
 #include "firebase.h"
 #include "follow_me.h"
 #include "line_follower.h"
@@ -33,7 +34,7 @@ void setMode(Mode newMode) {
 void updateModeLogic() {
   bool isObsTooClose = isObstacleTooClose();
   updateObstaclTooClose(isObsTooClose);
-  
+
   if (isObsTooClose) {
     stopCar();
     resetManualCommand();

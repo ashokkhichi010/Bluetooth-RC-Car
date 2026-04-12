@@ -22,21 +22,6 @@ enum MotionDirection {
   MOTION_BACKWARD_RIGHT,
 };
 
-void logInfo(const String &message) {
-  Serial.print("[INFO] ");
-  Serial.println(message);
-}
-
-void logWarn(const String &message) {
-  Serial.print("[WARN] ");
-  Serial.println(message);
-}
-
-void logError(const String &message) {
-  Serial.print("[ERROR] ");
-  Serial.println(message);
-}
-
 const char *modeName(Mode mode) {
   switch (mode) {
     case MANUAL_MODE:

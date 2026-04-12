@@ -2,6 +2,7 @@
 #define MANUAL_H
 
 #include "motor_functions.h"
+#include "logs.h"
 
 MotionDirection manualMotion = MOTION_STOP;
 

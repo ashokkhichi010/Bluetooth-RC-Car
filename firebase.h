@@ -25,6 +25,13 @@ bool streamsStarted = false;
 const unsigned long HEARTBEAT_INTERVAL_MS = 1000UL;
 const unsigned long COMMAND_POLL_INTERVAL_MS = 250UL;
 
+void addLog(const char *log) {
+  // 'setString' की जगह 'pushString' का उपयोग करें
+  // 'pushString' हर बार एक नया unique ID बनाता है जिससे पुराने लॉग्स डिलीट नहीं होते
+  // firebasePushString(LOGS_PATH, log);
+  Firebase.pushString(firebaseData, LOGS_PATH, log);
+}
+
 void setupFirebase() {
   logInfo("Initializing Firebase client");
   firebaseConfig.host = FIREBASE_HOST;
@@ -111,7 +118,7 @@ void updateServoAngle(int servoAngle) {
   firebaseSetInt(SERVO_ANGLE_PATH, servoAngle);
 }
 
-void updateCarLocation(int lat, int long) {}
+void updateCarLocation(int lat, int longi) {}
 
 void updateCarDirection(String direction) {
   firebaseSetString(DIRECTION_PATH, direction);
@@ -129,8 +136,16 @@ void updateCarSpeed(int speed) {
   firebaseSetInt(SPEED_PATH, speed);
 }
 
-void addLog(String log) {
-  firebaseSetString(LOGS_PATH, log);
-}
+// void clearLogs() {
+//   Serial.println("Deleting all logs...");
+
+//   // Firebase.deleteNode पूरे पाथ और उसके अंदर के सभी डेटा को डिलीट कर देता है
+//   if (Firebase.RTDB.deleteNode(&firebaseData, LOGS_PATH)) {
+//     Serial.println("Logs deleted successfully!");
+//   } else {
+//     Serial.print("Failed to delete logs: ");
+//     Serial.println(firebaseData.errorReason());
+//   }
+// }
 
 #endif

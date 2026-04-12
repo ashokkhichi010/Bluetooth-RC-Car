@@ -4,6 +4,7 @@
 #include "command.h"
 #include "pin_map.h"
 #include "firebase.h"
+#include "logs.h"
 
 // Motors (SAFE PWM)
 #define ENA MOTOR_LEFT_PWM_PIN
