@@ -1,34 +1,138 @@
-// version 1 with IR sensors
-#ifndef OBS_H
-#define OBS_H
+#ifndef OBS_MAIN_H
+#define OBS_MAIN_H
 
-#include "pin_map.h"
+#include "Arduino.h"
+#include "ultrasonic.h"
+#include "servo.h"
+#include "motor_functions.h"
 
-#define OBS_LEFT IR_OBSTACL_LEFT_PIN
-#define OBS_RIGHT IR_OBSTACL_RIGHT_PIN
+// --- Constants ---
+const int BREAK_DIST = 50;
+const int STOP_DIST = 10;
+const int HIGHEST_SPEED = 180;
+const int LOW_SPEED = 20;
+const int OBSTACLE_CONFIRM_COUNT = 5;
+
+// --- State machines ---
+enum States {
+  MOVE,
+  SEARCH,
+  TURN,
+};
+
+enum SearchStates {
+  SCAN_LEFT,
+  SCAN_RIGHT,
+};
+
+States currentState = MOVE;
+SearchStates currentSearchState = SCAN_LEFT;
+
+// --- Runtime vars ---
+int targetSpeed = 0;
+int obstacleCount = 0;
+
+int centerDist = 0;
+int stopDist = 0;
+int leftDist = 0;
+int rightDist = 0;
+
+unsigned long lastSpeedUpdate = 0;
 
 void setupObs() {
-  pinMode(OBS_LEFT, INPUT);
-  pinMode(OBS_RIGHT, INPUT);
+  setupUltrasonic();
+  setupServoScanner();
+  currentState = MOVE;
+  currentSearchState = SCAN_LEFT;
+  targetSpeed = 0;
+  obstacleCount = 0;
+}
+
+void resetObstacleAvoidanceState() {
+  currentState = MOVE;
+  currentSearchState = SCAN_LEFT;
+  targetSpeed = 0;
+  obstacleCount = 0;
+  centerDist = 0;
+  stopDist = 0;
+  leftDist = 0;
+  rightDist = 0;
+  lastSpeedUpdate = millis();
+  centerServoNow();
+  stopCar();
+}
+
+bool isObstacleTooClose() {
+  return checkObstacleFound(stopDist, STOP_DIST);
 }
 
 void runObstacleAvoidance() {
+  updateSpeed(targetSpeed);
 
-  bool leftObs = (digitalRead(OBS_LEFT) == LOW);
-  bool rightObs = (digitalRead(OBS_RIGHT) == LOW);
+  if (currentState != TURN) {
+    forward();
+  }
 
-  if (!leftObs && !rightObs) {
-    moveForward(150);
-    // Serial.println("MODE:OBS;DIR:FWD;OBS:N;");
-  } else if (leftObs && !rightObs) {
-    turnRight(250);
-    // Serial.println("MODE:OBS;DIR:RIGHT;OBS:L;");
-  } else if (!leftObs && rightObs) {
-    turnLeft(250);
-    // Serial.println("MODE:OBS;DIR:LEFT;OBS:R;");
-  } else {
-    stopCar();
-    // Serial.println("MODE:OBS;DIR:STOP;OBS:B;");
+  switch (currentState) {
+    case MOVE:
+      if (checkObstacleFound(centerDist, BREAK_DIST)) {
+        // updates centerDist as side effect
+        obstacleCount++;
+        if (obstacleCount >= OBSTACLE_CONFIRM_COUNT) {
+          obstacleCount = 0;
+          currentState = SEARCH;
+          currentSearchState = SCAN_LEFT;
+          targetSpeed = LOW_SPEED;
+        }
+      } else {
+        targetSpeed = HIGHEST_SPEED;
+        obstacleCount = 0;
+      }
+      break;
+    case SEARCH:
+      if (currentSearchState == SCAN_LEFT) {
+        turnServoLeft();
+
+        if (isSeroAtLeft()) {
+          delay(100);  // Wait for servo to settle
+          leftDist = getDistance();
+          currentSearchState = SCAN_RIGHT;
+        }
+      } else if (currentSearchState == SCAN_RIGHT) {
+        turnServoRight();
+
+        if (isSeroAtRight()) {
+          delay(100);  // Wait for servo to settle
+          rightDist = getDistance();
+          currentState = TURN;
+        }
+      }
+
+      break;
+    case TURN:
+      setSpeedValue(4);
+      if (leftDist < BREAK_DIST && rightDist < BREAK_DIST) {
+        if (leftDist > rightDist) {
+          backwardRight();
+        } else {
+          backwardLeft();
+        }
+      } else {
+        if (leftDist > rightDist) {
+          forwardLeft();
+        } else {
+          forwardRight();
+        }
+      }
+
+      turnServoCenter();
+
+      if (isSeroAtCenter()) {
+        currentState = MOVE;
+        targetSpeed = HIGHEST_SPEED;
+        setSpeedValue(9);
+      }
+      break;
   }
 }
 

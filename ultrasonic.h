@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "pin_map.h"
+#include "firebase.h"
 
 #define TRIG ULTRASONIC_TRIG_PIN
 #define ECHO ULTRASONIC_ECHO_PIN
@@ -14,7 +15,6 @@ void setupUltrasonic() {
   pinMode(TRIG, OUTPUT);
   pinMode(ECHO, INPUT);
   digitalWrite(TRIG, LOW);
-  // Serial.print(" Ultrosonic Setting ");
 }
 
 // -------- RAW DISTANCE --------
@@ -36,6 +36,7 @@ float getDistance() {
     return getDistance();
   }
 
+  updateObstaclDistance(dist);
   return dist;
 }
 

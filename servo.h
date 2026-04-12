@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <Servo.h>
 #include "pin_map.h"
+#include "firebase.h"
 
 #define SERVO_PIN SERVO_SIGNAL_PIN
 #define CENTER_ANGLE 90
@@ -29,9 +30,8 @@ void turnServoAt(int direction) {
   } else {
     return;
   }
-//  Serial.print(" servoCurrentAngle ");
-//  Serial.print(servoCurrentAngle);
   scanServo.write(servoCurrentAngle);
+  updateServoAngle(servoCurrentAngle);
 }
 
 void centerServo() {

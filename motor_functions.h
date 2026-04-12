@@ -1,7 +1,9 @@
 #ifndef MOTOR_FUNCTIONS_H
 #define MOTOR_FUNCTIONS_H
 
+#include "command.h"
 #include "pin_map.h"
+#include "firebase.h"
 
 // Motors (SAFE PWM)
 #define ENA MOTOR_LEFT_PWM_PIN
@@ -13,12 +15,36 @@
 #define IN3 MOTOR_RIGHT_IN1_PIN
 #define IN4 MOTOR_RIGHT_IN2_PIN
 
+int speedVal = 0;
+MotionDirection currentMotionDirection = MOTION_STOP;
+
 void stopCar();
 
-int speedVal = 200;
-
 void setSpeedValue(int newSpeed) {
-  speedVal = constrain(newSpeed * (newSpeed < 10 ? 28 : 1), 0, 255);   //  we will send only 0 to 9 that's why we are multiplying by 28
+  speedVal = constrain(newSpeed, 0, 255);
+  updateCarSpeed(speedVal);
+}
+
+void updateSpeed(int targetSpeed) {
+  if (speedVal == targetSpeed) return;
+
+  if (targetSpeed == 0) {
+    setSpeedValue(0);
+  } else if (speedVal < targetSpeed) {
+    setSpeedValue(speedVal + 1);
+  } else if (speedVal > targetSpeed) {
+    setSpeedValue(speedVal - 1);
+  }
+}
+
+void speedController(StreamData data) {
+  if (data.dataTypeEnum() != fb_esp_rtdb_data_type_integer && data.dataTypeEnum() != fb_esp_rtdb_data_type_float && data.dataTypeEnum() != fb_esp_rtdb_data_type_double) {
+    logWarn("Speed stream ignored non-numeric payload");
+    return;
+  }
+
+  speedVal = constrain(data.intData(), 0, 255);
+  logInfo("Speed updated from stream: " + String(speedVal));
 }
 
 void setupMotors() {
@@ -32,6 +58,7 @@ void setupMotors() {
 }
 
 void moveForward(int spd) {
+  currentMotionDirection = MOTION_FORWARD;
   analogWrite(ENA, spd);
   analogWrite(ENB, spd);
 
@@ -42,6 +69,7 @@ void moveForward(int spd) {
 }
 
 void moveBackward(int spd) {
+  currentMotionDirection = MOTION_BACKWARD;
   analogWrite(ENA, spd);
   analogWrite(ENB, spd);
 
@@ -52,6 +80,7 @@ void moveBackward(int spd) {
 }
 
 void turnLeft(int spd) {
+  currentMotionDirection = MOTION_LEFT;
   analogWrite(ENA, spd);
   analogWrite(ENB, spd);
 
@@ -62,6 +91,7 @@ void turnLeft(int spd) {
 }
 
 void turnRight(int spd) {
+  currentMotionDirection = MOTION_RIGHT;
   analogWrite(ENA, spd);
   analogWrite(ENB, spd);
 
@@ -72,6 +102,7 @@ void turnRight(int spd) {
 }
 
 void stopCar() {
+  currentMotionDirection = MOTION_STOP;
   analogWrite(ENA, 0);
   analogWrite(ENB, 0);
   digitalWrite(IN1, LOW);
@@ -82,47 +113,15 @@ void stopCar() {
 
 // -------- MOTOR FUNCTIONS --------
 void forward() {
-  analogWrite(ENA, speedVal);
-  analogWrite(ENB, speedVal);
-
-  digitalWrite(IN1, HIGH);
-  digitalWrite(IN2, LOW);
-  digitalWrite(IN3, HIGH);
-  digitalWrite(IN4, LOW);
+  moveForward(speedVal);
 }
 
 void backward() {
-  analogWrite(ENA, speedVal);
-  analogWrite(ENB, speedVal);
-
-  digitalWrite(IN1, LOW);
-  digitalWrite(IN2, HIGH);
-  digitalWrite(IN3, LOW);
-  digitalWrite(IN4, HIGH);
+  moveBackward(speedVal);
 }
 
-void left() {
-  analogWrite(ENA, speedVal);
-  analogWrite(ENB, speedVal);
-
-  digitalWrite(IN1, LOW);
-  digitalWrite(IN2, HIGH);
-  digitalWrite(IN3, HIGH);
-  digitalWrite(IN4, LOW);
-}
-
-void right() {
-  analogWrite(ENA, speedVal);
-  analogWrite(ENB, speedVal);
-
-  digitalWrite(IN1, HIGH);
-  digitalWrite(IN2, LOW);
-  digitalWrite(IN3, LOW);
-  digitalWrite(IN4, HIGH);
-}
-
-// -------- DIAGONAL --------
 void forwardLeft() {
+  currentMotionDirection = MOTION_FORWARD_LEFT;
   analogWrite(ENA, speedVal / 2);
   analogWrite(ENB, speedVal);
 
@@ -133,6 +132,7 @@ void forwardLeft() {
 }
 
 void forwardRight() {
+  currentMotionDirection = MOTION_FORWARD_RIGHT;
   analogWrite(ENA, speedVal);
   analogWrite(ENB, speedVal / 2);
 
@@ -143,6 +143,7 @@ void forwardRight() {
 }
 
 void backwardLeft() {
+  currentMotionDirection = MOTION_BACKWARD_LEFT;
   analogWrite(ENA, speedVal / 2);
   analogWrite(ENB, speedVal);
 
@@ -153,6 +154,7 @@ void backwardLeft() {
 }
 
 void backwardRight() {
+  currentMotionDirection = MOTION_BACKWARD_RIGHT;
   analogWrite(ENA, speedVal);
   analogWrite(ENB, speedVal / 2);
 
@@ -162,8 +164,8 @@ void backwardRight() {
   digitalWrite(IN4, HIGH);
 }
 
-// -------- Motor Control --------
 void setMotor(int left, int right) {
+  currentMotionDirection = MOTION_FORWARD;
   analogWrite(ENA, constrain(left, 0, 255));
   analogWrite(ENB, constrain(right, 0, 255));
 
@@ -171,6 +173,39 @@ void setMotor(int left, int right) {
   digitalWrite(IN2, LOW);
   digitalWrite(IN3, HIGH);
   digitalWrite(IN4, LOW);
+}
+
+void applyMotionDirection(MotionDirection direction) {
+  switch (direction) {
+    case MOTION_FORWARD:
+      forward();
+      break;
+    case MOTION_BACKWARD:
+      backward();
+      break;
+    case MOTION_LEFT:
+      turnLeft(speedVal);
+      break;
+    case MOTION_RIGHT:
+      turnRight(speedVal);
+      break;
+    case MOTION_FORWARD_LEFT:
+      forwardLeft();
+      break;
+    case MOTION_FORWARD_RIGHT:
+      forwardRight();
+      break;
+    case MOTION_BACKWARD_LEFT:
+      backwardLeft();
+      break;
+    case MOTION_BACKWARD_RIGHT:
+      backwardRight();
+      break;
+    case MOTION_STOP:
+    default:
+      stopCar();
+      break;
+  }
 }
 
 #endif

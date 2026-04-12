@@ -1,47 +1,18 @@
+#include <math.h>
+
+#include "command.h"
+#include "firebase.h"
 #include "follow_me.h"
 #include "line_follower.h"
 #include "manual.h"
 #include "motor_functions.h"
-#include "obstacle_avoidance_v2.h"
+#include "obstacle_avoidance.h"
 #include "pin_map.h"
-#include <SoftwareSerial.h>
-
-
-// -------- BLUETOOTH --------
-SoftwareSerial softBT(BT_RX_PIN, BT_TX_PIN);  // RX, TX
-
-// -------- MODE --------
-enum Mode {
-  LINE_MODE,
-  OBS_MODE,
-  MANUAL_MODE,
-  FOLLOW_ME,
-};
 
 Mode currentMode = MANUAL_MODE;
 
-// -------- SERIAL BUFFER --------
-char command = '\0';
-
-bool usesHardwareSerialForBluetooth() {
-  return BT_RX_PIN == 0 && BT_TX_PIN == 1;
-}
-
-void beginBluetooth(unsigned long baudRate) {
-  if (usesHardwareSerialForBluetooth()) {
-    Serial.begin(baudRate);
-  } else {
-    softBT.begin(baudRate);
-  }
-}
-
-int bluetoothAvailable() {
-  return usesHardwareSerialForBluetooth() ? Serial.available() : softBT.available();
-}
-
-int bluetoothRead() {
-  return usesHardwareSerialForBluetooth() ? Serial.read() : softBT.read();
-}
+unsigned long lastLocationUpdateAt = 0;
+bool runtimeStreamsStarted = false;
 
 void setMode(Mode newMode) {
   if (currentMode == newMode) {
@@ -50,7 +21,7 @@ void setMode(Mode newMode) {
 
   stopCar();
 
-  if (newMode == OBS_MODE) {
+  if (newMode == AUTO_MODE) {
     resetObstacleAvoidanceState();
   } else if (newMode == MANUAL_MODE) {
     resetManualCommand();
@@ -59,73 +30,86 @@ void setMode(Mode newMode) {
   currentMode = newMode;
 }
 
-// -------- SETUP --------
-void setup() {
-  //  Serial.begin(9600);
-  beginBluetooth(9600);
-
-  setupMotors();
-  setupLine();
-  setupObs();
-  resetManualCommand();
-  // setupFollowMe();
-  Serial.println("[SYS] ready");
-}
-
-// -------- READ COMMAND --------
-void readCommand() {
-  while (bluetoothAvailable()) {
-    command = (char)bluetoothRead();
-    Serial.print(" command ");
-    Serial.println(command);
-
-    if (command == '\r' || command == '\n') {
-      continue;
-    }
-
-    //  Serial.print(" command ");
-    //  Serial.println(command);
-
-    switch (command) {
-      case 'N':
-        setMode(LINE_MODE);
-        break;
-      case 'O':
-        setMode(OBS_MODE);
-        break;
-      case 'M':
-        setMode(MANUAL_MODE);
-        break;
-      case 'W':
-        setMode(FOLLOW_ME);
-        break;
-      default:
-        if (command >= '0' && command <= '9') {
-          setSpeedValue(command - '0');
-        } else {
-          handleManualCommand(command);
-        }
-    }
+void updateModeLogic() {
+  bool isObsTooClose = isObstacleTooClose();
+  updateObstaclTooClose(isObsTooClose);
+  
+  if (isObsTooClose) {
+    stopCar();
+    resetManualCommand();
+    return;
   }
-}
 
-void loop() {
-  readCommand();
   switch (currentMode) {
     case LINE_MODE:
       runLineFollower();
       break;
-
-    case OBS_MODE:
+    case AUTO_MODE:
       runObstacleAvoidance();
       break;
-
     case MANUAL_MODE:
       runManual();
       break;
-
-    case FOLLOW_ME:
-      followMeRSSI();
+    case FOLLOW_ME_MODE:
+      runFollowMe();
       break;
   }
+}
+
+void modeController(StreamData data) {
+  String newMode = data.stringData();
+
+  if (newMode.equalsIgnoreCase("LINE")) {
+    setMode(LINE_MODE);
+  } else if (newMode.equalsIgnoreCase("MANUAL")) {
+    setMode(MANUAL_MODE);
+  } else if (newMode.equalsIgnoreCase("AUTO")) {
+    setMode(AUTO_MODE);
+  } else if (newMode.equalsIgnoreCase("FOLLOW_ME") || newMode.equalsIgnoreCase("FOLLOWME")) {
+    setMode(FOLLOW_ME_MODE);
+  } else {
+    logWarn("Unknown streamed mode: " + newMode);
+    return;
+  }
+
+  logInfo("Mode updated from stream: " + newMode);
+}
+
+void setup() {
+  Serial.begin(115200);
+  logInfo("Booting robot firmware");
+  setupWifiStorage();
+  setupMotors();
+  logInfo("Motors initialized");
+  setupLine();
+  logInfo("Line follower sensors initialized");
+  setupObs();
+  logInfo("Obstacle avoidance initialized");
+  resetManualCommand();
+  setupFollowMe();
+  logInfo("Follow-me module initialized");
+  startWifiConnectIfNeeded();
+  setupFirebase();
+  lastLocationUpdateAt = millis();
+  logInfo("Setup complete. Waiting for WiFi before starting streams.");
+}
+
+void loop() {
+  updateWiFi();
+
+  if (!isWifiConnected()) {
+    stopCar();
+    runtimeStreamsStarted = false;
+    streamsStarted = false;
+    return;
+  }
+
+  if (!runtimeStreamsStarted) {
+    startAllStreams(speedController, modeController, menualController);
+    runtimeStreamsStarted = true;
+  }
+
+  updateHeartbeat();
+  Firebase.ready();
+  updateModeLogic();
 }

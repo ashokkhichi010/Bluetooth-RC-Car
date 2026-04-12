@@ -3,42 +3,41 @@
 
 #include "motor_functions.h"
 
-char manualCmd = 'S';
+MotionDirection manualMotion = MOTION_STOP;
 
-void handleManualCommand(char cmd) {
-  switch (cmd) {
-    case 'F':
-    case 'B':
-    case 'L':
-    case 'R':
-    case 'S':
-    case 'G':
-    case 'I':
-    case 'H':
-    case 'J':
-      manualCmd = cmd;
-      break;
+void menualController(StreamData data) {
+  String newDirection = data.stringData();
+  logInfo("New Direction: " + newDirection);
+
+  if (newDirection.equalsIgnoreCase("FORWARD")) {
+    manualMotion = MOTION_FORWARD;
+  } else if (newDirection.equalsIgnoreCase("BACKWARD")) {
+    manualMotion = MOTION_BACKWARD;
+  } else if (newDirection.equalsIgnoreCase("LEFT")) {
+    manualMotion = MOTION_LEFT;
+  } else if (newDirection.equalsIgnoreCase("RIGHT")) {
+    manualMotion = MOTION_RIGHT;
+  } else if (newDirection.equalsIgnoreCase("FORWARD_LEFT")) {
+    manualMotion = MOTION_FORWARD_LEFT;
+  } else if (newDirection.equalsIgnoreCase("FORWARD_RIGHT")) {
+    manualMotion = MOTION_FORWARD_RIGHT;
+  } else if (newDirection.equalsIgnoreCase("BACKWARD_LEFT")) {
+    manualMotion = MOTION_BACKWARD_LEFT;
+  } else if (newDirection.equalsIgnoreCase("BACKWARD_RIGHT")) {
+    manualMotion = MOTION_BACKWARD_RIGHT;
+  } else {
+    manualMotion = MOTION_STOP;
   }
+
+  logInfo("Manual direction updated from stream: " + newDirection);
 }
 
 void resetManualCommand() {
-  manualCmd = 'S';
+  manualMotion = MOTION_STOP;
 }
 
 void runManual() {
-  switch (manualCmd) {
-    case 'F': forward(); break;
-    case 'B': backward(); break;
-    case 'L': turnLeft(100); break;
-    case 'R': turnRight(100); break;
-    case 'S': stopCar(); break;
-
-    case 'G': forwardLeft(); break;
-    case 'I': forwardRight(); break;
-    case 'H': backwardLeft(); break;
-    case 'J': backwardRight(); break;
-    // default: stopCar(); break;
-  }
+  applyMotionDirection(manualMotion);
 }
 
 #endif
