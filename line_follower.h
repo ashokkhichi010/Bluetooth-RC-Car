@@ -8,11 +8,20 @@
 #define LINE_RIGHT LINE_RIGHT_PIN
 
 void setupLine() {
-  pinMode(LINE_LEFT, INPUT);
-  pinMode(LINE_RIGHT, INPUT);
+  if (LINE_LEFT >= 0) {
+    pinMode(LINE_LEFT, INPUT);
+  }
+  if (LINE_RIGHT >= 0) {
+    pinMode(LINE_RIGHT, INPUT);
+  }
 }
 
 void runLineFollower() {
+  if (LINE_LEFT < 0 || LINE_RIGHT < 0) {
+    stopCar();
+    return;
+  }
+
   int left = digitalRead(LINE_LEFT);
   int right = digitalRead(LINE_RIGHT);
 

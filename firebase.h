@@ -12,48 +12,63 @@ FirebaseData firebaseData;
 FirebaseJson firebaseJson;
 FirebaseJsonData firebaseJsonData;
 
-FirebaseData speedFB;
-FirebaseData modeFB;
-FirebaseData menualDirectionFB;
+FirebaseData carFB;
+FirebaseData deviceLocationFB;
 
-unsigned long lastFirebaseOnlineWriteAt = 0;
 unsigned long lastHeartbeatAt = 0;
-unsigned long lastCommandPollAt = 0;
-bool lastOnlineStatus = false;
 bool streamsStarted = false;
+bool deviceLocationStreamStarted = false;
 
 const unsigned long HEARTBEAT_INTERVAL_MS = 1000UL;
-const unsigned long COMMAND_POLL_INTERVAL_MS = 250UL;
+
+bool firebaseCanWrite() {
+  return isWifiConnected() && Firebase.ready();
+}
 
 void addLog(const char *log) {
   // 'setString' की जगह 'pushString' का उपयोग करें
   // 'pushString' हर बार एक नया unique ID बनाता है जिससे पुराने लॉग्स डिलीट नहीं होते
   // firebasePushString(LOGS_PATH, log);
-  Firebase.pushString(firebaseData, LOGS_PATH, log);
+  //  Serial.println(log);
+  if (firebaseCanWrite()) {
+    Firebase.pushString(firebaseData, LOGS_PATH, log);
+  }
 }
 
 void setupFirebase() {
-  logInfo("Initializing Firebase client");
   firebaseConfig.host = FIREBASE_HOST;
   firebaseConfig.signer.tokens.legacy_token = FIREBASE_AUTH;
   Firebase.begin(&firebaseConfig, &firebaseAuth);
   Firebase.reconnectWiFi(true);
   logInfo("Firebase initialized for host: " + String(FIREBASE_HOST));
+  //  Serial.println("Firebase initialized Successfully");
 }
 
 bool firebaseSetBool(const String &path, bool value) {
+  if (!firebaseCanWrite()) {
+    return false;
+  }
   return Firebase.setBool(firebaseData, path, value);
 }
 
 bool firebaseSetInt(const String &path, int value) {
+  if (!firebaseCanWrite()) {
+    return false;
+  }
   return Firebase.setInt(firebaseData, path, value);
 }
 
 bool firebaseSetFloat(const String &path, float value) {
+  if (!firebaseCanWrite()) {
+    return false;
+  }
   return Firebase.setFloat(firebaseData, path, value);
 }
 
 bool firebaseSetString(const String &path, const String &value) {
+  if (!firebaseCanWrite()) {
+    return false;
+  }
   return Firebase.setString(firebaseData, path, value);
 }
 
@@ -90,35 +105,43 @@ void startStreaming(String path, FirebaseData &dataObj, FirebaseData::StreamEven
   }
 }
 
-void startSpeedStreaming(FirebaseData::StreamEventCallback callback) {
-  startStreaming(SPEED_PATH, speedFB, callback);
+void startCarStreaming(FirebaseData::StreamEventCallback callback) {
+  startStreaming(CAR_PATH, carFB, callback);
 }
 
-void startModeStreaming(FirebaseData::StreamEventCallback callback) {
-  startStreaming(MODE_PATH, modeFB, callback);
+void startDeviceLocationStreaming(FirebaseData::StreamEventCallback callback) {
+  startStreaming(DEVICE_LOCATION_PATH, deviceLocationFB, callback);
 }
 
-void startMenualDirectionStreaming(FirebaseData::StreamEventCallback callback) {
-  startStreaming(DIRECTION_PATH, menualDirectionFB, callback);
-}
-
-void startAllStreams(FirebaseData::StreamEventCallback speedCallback, FirebaseData::StreamEventCallback modeCallback, FirebaseData::StreamEventCallback directionCallback) {
+void startAllStreams(
+  FirebaseData::StreamEventCallback carCallback) {
   if (streamsStarted || !isWifiConnected()) {
     return;
   }
 
-  startSpeedStreaming(speedCallback);
-  startModeStreaming(modeCallback);
-  startMenualDirectionStreaming(directionCallback);
+  startCarStreaming(carCallback);
   streamsStarted = true;
   logInfo("All Firebase streams started.");
+}
+
+void startDeviceLocationStreamIfNeeded(FirebaseData::StreamEventCallback callback) {
+  if (deviceLocationStreamStarted || !isWifiConnected()) {
+    return;
+  }
+
+  startDeviceLocationStreaming(callback);
+  deviceLocationStreamStarted = true;
+  logInfo("Device location stream started.");
 }
 
 void updateServoAngle(int servoAngle) {
   firebaseSetInt(SERVO_ANGLE_PATH, servoAngle);
 }
 
-void updateCarLocation(int lat, int longi) {}
+void updateCarLocation(float lat, float lng) {
+  firebaseSetFloat(CAR_LOCATION_LAT_PATH, lat);
+  firebaseSetFloat(CAR_LOCATION_LNG_PATH, lng);
+}
 
 void updateCarDirection(String direction) {
   firebaseSetString(DIRECTION_PATH, direction);
@@ -136,16 +159,11 @@ void updateCarSpeed(int speed) {
   firebaseSetInt(SPEED_PATH, speed);
 }
 
-// void clearLogs() {
-//   Serial.println("Deleting all logs...");
-
-//   // Firebase.deleteNode पूरे पाथ और उसके अंदर के सभी डेटा को डिलीट कर देता है
-//   if (Firebase.RTDB.deleteNode(&firebaseData, LOGS_PATH)) {
-//     Serial.println("Logs deleted successfully!");
-//   } else {
-//     Serial.print("Failed to delete logs: ");
-//     Serial.println(firebaseData.errorReason());
-//   }
-// }
+void clearLogs() {
+  if (!firebaseCanWrite()) {
+    return;
+  }
+  Firebase.deleteNode(firebaseData, LOGS_PATH);
+}
 
 #endif

@@ -10,14 +10,12 @@ unsigned long lastWifiAttemptAt = 0;
 bool wifiBeginIssued = false;
 bool lastWifiConnectedState = false;
 
-void setupWifiStorage() {
-}
-
 bool isWifiConnected() {
   return WiFi.status() == WL_CONNECTED;
 }
 
 void startWifiConnectIfNeeded() {
+  //  Serial.print(".");
   if (isWifiConnected()) {
     return;
   }
@@ -34,6 +32,10 @@ void startWifiConnectIfNeeded() {
 
 void updateWiFi() {
   if (isWifiConnected()) {
+    if (!lastWifiConnectedState) {
+      //  Serial.println("");
+      //  Serial.println("Wi-Fi Connected Successfully");
+    }
     lastWifiConnectedState = true;
     wifiBeginIssued = false;
     return;

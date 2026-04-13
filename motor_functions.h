@@ -60,6 +60,7 @@ void setupMotors() {
 
 void moveForward(int spd) {
   currentMotionDirection = MOTION_FORWARD;
+  updateCarDirection("FORWARD");
   analogWrite(ENA, spd);
   analogWrite(ENB, spd);
 
@@ -71,6 +72,7 @@ void moveForward(int spd) {
 
 void moveBackward(int spd) {
   currentMotionDirection = MOTION_BACKWARD;
+  updateCarDirection("BACKWARD");
   analogWrite(ENA, spd);
   analogWrite(ENB, spd);
 
@@ -82,6 +84,7 @@ void moveBackward(int spd) {
 
 void turnLeft(int spd) {
   currentMotionDirection = MOTION_LEFT;
+  updateCarDirection("LEFT");
   analogWrite(ENA, spd);
   analogWrite(ENB, spd);
 
@@ -93,6 +96,7 @@ void turnLeft(int spd) {
 
 void turnRight(int spd) {
   currentMotionDirection = MOTION_RIGHT;
+  updateCarDirection("RIGHT");
   analogWrite(ENA, spd);
   analogWrite(ENB, spd);
 
@@ -104,6 +108,7 @@ void turnRight(int spd) {
 
 void stopCar() {
   currentMotionDirection = MOTION_STOP;
+  updateCarDirection("STOP");
   analogWrite(ENA, 0);
   analogWrite(ENB, 0);
   digitalWrite(IN1, LOW);
@@ -123,6 +128,7 @@ void backward() {
 
 void forwardLeft() {
   currentMotionDirection = MOTION_FORWARD_LEFT;
+  updateCarDirection("FORWARD_LEFT");
   analogWrite(ENA, speedVal / 2);
   analogWrite(ENB, speedVal);
 
@@ -134,6 +140,7 @@ void forwardLeft() {
 
 void forwardRight() {
   currentMotionDirection = MOTION_FORWARD_RIGHT;
+  updateCarDirection("FORWARD_RIGHT");
   analogWrite(ENA, speedVal);
   analogWrite(ENB, speedVal / 2);
 
@@ -145,6 +152,7 @@ void forwardRight() {
 
 void backwardLeft() {
   currentMotionDirection = MOTION_BACKWARD_LEFT;
+  updateCarDirection("BACKWARD_LEFT");
   analogWrite(ENA, speedVal / 2);
   analogWrite(ENB, speedVal);
 
@@ -156,6 +164,7 @@ void backwardLeft() {
 
 void backwardRight() {
   currentMotionDirection = MOTION_BACKWARD_RIGHT;
+  updateCarDirection("BACKWARD_RIGHT");
   analogWrite(ENA, speedVal);
   analogWrite(ENB, speedVal / 2);
 
@@ -167,6 +176,7 @@ void backwardRight() {
 
 void setMotor(int left, int right) {
   currentMotionDirection = MOTION_FORWARD;
+  updateCarDirection("FORWARD");
   analogWrite(ENA, constrain(left, 0, 255));
   analogWrite(ENB, constrain(right, 0, 255));
 

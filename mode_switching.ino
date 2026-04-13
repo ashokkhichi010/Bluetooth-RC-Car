@@ -12,8 +12,12 @@
 
 Mode currentMode = MANUAL_MODE;
 
-unsigned long lastLocationUpdateAt = 0;
 bool runtimeStreamsStarted = false;
+bool followMeInitialized = false;
+bool bootLogsCleared = false;
+
+void clearLogs();
+void carController(StreamData data);
 
 void setMode(Mode newMode) {
   if (currentMode == newMode) {
@@ -26,6 +30,14 @@ void setMode(Mode newMode) {
     resetObstacleAvoidanceState();
   } else if (newMode == MANUAL_MODE) {
     resetManualCommand();
+  } else if (newMode == FOLLOW_ME_MODE && !followMeInitialized) {
+    setupFollowMe();
+    followMeInitialized = true;
+    logInfo("Follow-me module initialized");
+  }
+
+  if (newMode == FOLLOW_ME_MODE) {
+    startDeviceLocationStreamIfNeeded(deviceLocationController);
   }
 
   currentMode = newMode;
@@ -36,7 +48,7 @@ void updateModeLogic() {
   updateObstaclTooClose(isObsTooClose);
 
   if (isObsTooClose) {
-    stopCar();
+    backward();
     resetManualCommand();
     return;
   }
@@ -76,10 +88,56 @@ void modeController(StreamData data) {
   logInfo("Mode updated from stream: " + newMode);
 }
 
+void carController(StreamData data) {
+  String path = data.dataPath();
+
+  if (path.length() == 0 || path == "/") {
+    if (data.dataTypeEnum() != fb_esp_rtdb_data_type_json) {
+      return;
+    }
+
+    FirebaseJson *json = data.to<FirebaseJson *>();
+    FirebaseJsonData jsonData;
+
+    if (json != nullptr && json->get(jsonData, "speed")) {
+      speedVal = constrain(jsonData.intValue, 0, 255);
+      logInfo("Speed updated from car stream: " + String(speedVal));
+    }
+
+    if (json != nullptr && json->get(jsonData, "mode")) {
+      String modeValue = jsonData.stringValue;
+      Mode parsedMode;
+      if (parseModeName(modeValue, parsedMode)) {
+        setMode(parsedMode);
+        logInfo("Mode updated from car stream: " + modeValue);
+      }
+    }
+
+    if (json != nullptr && json->get(jsonData, "direction")) {
+      String directionValue = jsonData.stringValue;
+      setManualDirectionFromString(directionValue);
+      logInfo("Manual direction updated from car stream: " + directionValue);
+    }
+
+    return;
+  }
+
+  if (path == "/speed") {
+    speedController(data);
+  } else if (path == "/mode") {
+    modeController(data);
+  } else if (path == "/direction") {
+    menualController(data);
+  }
+}
+
 void setup() {
-  Serial.begin(115200);
+  //  Serial.begin(115200);
+  //  Serial.print("Start Connecting to Wi-Fi");
+  startWifiConnectIfNeeded();
+  //  Serial.println("Start Connecting to Firebase");
+  setupFirebase();
   logInfo("Booting robot firmware");
-  setupWifiStorage();
   setupMotors();
   logInfo("Motors initialized");
   setupLine();
@@ -87,30 +145,35 @@ void setup() {
   setupObs();
   logInfo("Obstacle avoidance initialized");
   resetManualCommand();
-  setupFollowMe();
-  logInfo("Follow-me module initialized");
-  startWifiConnectIfNeeded();
-  setupFirebase();
-  lastLocationUpdateAt = millis();
-  logInfo("Setup complete. Waiting for WiFi before starting streams.");
+  logInfo("Setup complete.");
 }
 
 void loop() {
   updateWiFi();
+  Firebase.ready();
 
   if (!isWifiConnected()) {
     stopCar();
     runtimeStreamsStarted = false;
     streamsStarted = false;
+    deviceLocationStreamStarted = false;
+    bootLogsCleared = false;
     return;
   }
 
+  if (!bootLogsCleared) {
+    clearLogs();
+    bootLogsCleared = true;
+    logInfo("Firebase logs cleared for fresh boot.");
+  }
+
   if (!runtimeStreamsStarted) {
-    startAllStreams(speedController, modeController, menualController);
+    startAllStreams(carController);
     runtimeStreamsStarted = true;
   }
 
   updateHeartbeat();
-  Firebase.ready();
+  // updateGps();
+  // publishGpsLocation();
   updateModeLogic();
 }

@@ -21,10 +21,14 @@
 #define ULTRASONIC_TRIG_PIN D3
 #define ULTRASONIC_ECHO_PIN D4
 
-#define SERVO_SIGNAL_PIN 3  //  RX - GPIO-3
+#define SERVO_SIGNAL_PIN D8
 
-#define LINE_LEFT_PIN A0
-#define LINE_RIGHT_PIN D8
+#define LINE_LEFT_PIN -1
+#define LINE_RIGHT_PIN -1
+
+#define GPS_RX_PIN 3
+#define GPS_TX_PIN 1
+#define GPS_BAUD_RATE 9600
 
 #endif
 

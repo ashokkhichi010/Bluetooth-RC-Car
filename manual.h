@@ -6,10 +6,7 @@
 
 MotionDirection manualMotion = MOTION_STOP;
 
-void menualController(StreamData data) {
-  String newDirection = data.stringData();
-  logInfo("New Direction: " + newDirection);
-
+void setManualDirectionFromString(const String &newDirection) {
   if (newDirection.equalsIgnoreCase("FORWARD")) {
     manualMotion = MOTION_FORWARD;
   } else if (newDirection.equalsIgnoreCase("BACKWARD")) {
@@ -29,8 +26,13 @@ void menualController(StreamData data) {
   } else {
     manualMotion = MOTION_STOP;
   }
+}
 
-  logInfo("Manual direction updated from stream: " + newDirection);
+void menualController(StreamData data) {
+  String newDirection = data.stringData();
+
+  setManualDirectionFromString(newDirection);
+  logInfo("New Direction: " + newDirection);
 }
 
 void resetManualCommand() {
